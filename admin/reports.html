@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Reports - Eventify Admin</title>
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <div class="brand-icon">🎟️</div>
+          <span class="brand-text">Eventify</span>
+        </a>
+        <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <div class="nav-section-title">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="events.html" class="nav-item">
+          <span class="nav-icon">🎟️</span>
+          <span class="nav-text">Events</span>
+        </a>
+        <a href="users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Users</span>
+        </a>
+        <a href="bookings.html" class="nav-item">
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Bookings</span>
+        </a>
+        <a href="venues.html" class="nav-item">
+          <span class="nav-icon">🏛️</span>
+          <span class="nav-text">Venues</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Config</div>
+        <a href="reports.html" class="nav-item active">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="settings.html" class="user-snippet">
+          <div class="avatar user-avatar-display">A</div>
+          <div class="user-snippet-info">
+            <div class="user-snippet-name user-name-display">Alexander Wright</div>
+            <div class="user-snippet-role">Administrator</div>
+          </div>
+        </a>
+        <div style="margin-top: 0.5rem;">
+          <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
+            <span>🚪</span>
+            <span class="logout-btn-text">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <div class="header-title-group">
+            <h1>Reports & Analytics</h1>
+            <p>Financial summaries, revenue growth charts, and attendance yields.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-toggle-icon"></span>
+          </button>
+          <div class="dropdown-wrapper">
+            <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">A</button>
+            <div class="dropdown-menu">
+              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body fade-in">
+        <!-- Actions -->
+        <div class="flex justify-between items-center flex-wrap gap-4" style="margin-bottom: 2rem;">
+          <div>
+            <h2 class="text-xl font-bold">Financial & Occupancy Yields</h2>
+            <p class="text-secondary text-sm">Real-time revenue aggregation and attendee performance.</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Print Summary</button>
+            <button class="btn btn-primary btn-sm" onclick="Admin.exportReportCsv()">📥 Export CSV Dataset</button>
+          </div>
+        </div>
+
+        <!-- 4 Key Report Metrics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">💰</div>
+            <div class="stat-info">
+              <div class="stat-label">Net Gross Revenue</div>
+              <div class="stat-value" id="report-total-revenue">$0</div>
+              <div class="text-xs text-muted">Across all events</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">📈</div>
+            <div class="stat-info">
+              <div class="stat-label">Avg Booking Value</div>
+              <div class="stat-value" id="report-avg-ticket">$0</div>
+              <div class="text-xs text-muted">Per transaction</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">🎯</div>
+            <div class="stat-info">
+              <div class="stat-label">Seat Occupancy Rate</div>
+              <div class="stat-value" id="report-occupancy">0%</div>
+              <div class="text-xs text-muted">Total capacity fill</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--info);">👥</div>
+            <div class="stat-info">
+              <div class="stat-label">Total Attendees</div>
+              <div class="stat-value" id="report-total-attendees">0</div>
+              <div class="text-xs text-muted">Confirmed tickets</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue Chart Card -->
+        <div class="chart-card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">2026 Monthly Revenue Trajectory</h3>
+              <div class="card-subtitle">Monthly ticket receipts comparison</div>
+            </div>
+            <span class="badge badge-success">+28.4% YoY</span>
+          </div>
+          <div class="chart-container" style="min-height: 300px;">
+            <canvas id="report-revenue-bar-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Summary Performance Breakdown -->
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom: 1rem;">Platform Revenue Breakdown by Category</h3>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Events Hosted</th>
+                  <th>Tickets Sold</th>
+                  <th>Occupancy</th>
+                  <th>Total Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="category-tag">Conference</span></td>
+                  <td>3 Events</td>
+                  <td>707 Tickets</td>
+                  <td><strong>88.4%</strong></td>
+                  <td class="font-bold text-primary">$81,988</td>
+                </tr>
+                <tr>
+                  <td><span class="category-tag">Concert</span></td>
+                  <td>2 Events</td>
+                  <td>1,140 Tickets</td>
+                  <td><strong>95.0%</strong></td>
+                  <td class="font-bold text-primary">$96,900</td>
+                </tr>
+                <tr>
+                  <td><span class="category-tag">Workshop</span></td>
+                  <td>1 Event</td>
+                  <td>58 Tickets</td>
+                  <td><strong>96.6%</strong></td>
+                  <td class="font-bold text-primary">$8,642</td>
+                </tr>
+                <tr>
+                  <td><span class="category-tag">Sports</span></td>
+                  <td>1 Event</td>
+                  <td>1,420 Tickets</td>
+                  <td><strong>94.6%</strong></td>
+                  <td class="font-bold text-primary">$92,300</td>
+                </tr>
+                <tr>
+                  <td><span class="category-tag">Party</span></td>
+                  <td>1 Event</td>
+                  <td>150 Tickets</td>
+                  <td><strong>83.3%</strong></td>
+                  <td class="font-bold text-primary">$16,500</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/charts.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Admin.initReportsPage();
+    });
+  </script>
+</body>
+</html>

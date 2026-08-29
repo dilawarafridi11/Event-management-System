@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Eventify</title>
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <div class="brand-icon">🎟️</div>
+          <span class="brand-text">Eventify</span>
+        </a>
+        <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">
+          ◀
+        </button>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <div class="nav-section-title">Main Menu</div>
+        <a href="dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="events.html" class="nav-item">
+          <span class="nav-icon">🎟️</span>
+          <span class="nav-text">Events</span>
+        </a>
+        <a href="users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Users</span>
+        </a>
+        <a href="bookings.html" class="nav-item">
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Bookings</span>
+        </a>
+        <a href="venues.html" class="nav-item">
+          <span class="nav-icon">🏛️</span>
+          <span class="nav-text">Venues</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Config</div>
+        <a href="reports.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="settings.html" class="user-snippet">
+          <div class="avatar user-avatar-display">A</div>
+          <div class="user-snippet-info">
+            <div class="user-snippet-name user-name-display">Alexander Wright</div>
+            <div class="user-snippet-role">Administrator</div>
+          </div>
+        </a>
+        <div style="margin-top: 0.5rem;">
+          <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
+            <span>🚪</span>
+            <span class="logout-btn-text">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <div class="header-title-group">
+            <h1>Welcome back, Admin 👋</h1>
+            <p>Here's what's happening with your events and ticketing today.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Global Search -->
+          <div class="header-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search events, bookings..." aria-label="Search">
+          </div>
+
+          <!-- Notification Dropdown -->
+          <div class="dropdown-wrapper">
+            <button class="btn-icon" data-toggle="dropdown" title="Notifications" aria-label="Notifications">
+              <span>🔔</span>
+              <span class="notification-badge">3</span>
+            </button>
+            <div class="dropdown-menu notification-dropdown">
+              <div class="notification-header">
+                <div class="font-bold text-sm">Notifications</div>
+                <a href="#" id="mark-all-read-btn" class="text-xs text-primary">Mark all as read</a>
+              </div>
+              <div class="notification-list">
+                <!-- Populated via notifications.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-toggle-icon"></span>
+          </button>
+
+          <!-- Profile Dropdown -->
+          <div class="dropdown-wrapper">
+            <button class="avatar user-avatar-display" data-toggle="dropdown" style="cursor: pointer;" aria-label="User Profile">
+              A
+            </button>
+            <div class="dropdown-menu">
+              <div style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-color);">
+                <div class="font-bold text-sm user-name-display">Alexander Wright</div>
+                <div class="text-xs text-muted user-email-display">admin@eventify.com</div>
+              </div>
+              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+              <a href="../user/dashboard.html" class="dropdown-item">👤 Switch to User View</a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body fade-in">
+        <!-- Quick Action Bar -->
+        <div class="flex justify-between items-center flex-wrap gap-4" style="margin-bottom: 2rem;">
+          <div>
+            <h2 class="text-xl font-bold">Executive Overview</h2>
+            <p class="text-secondary text-sm">Real-time metrics, live ticket sales, and event occupancy rates.</p>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button class="btn btn-secondary btn-sm" onclick="Admin.triggerShimmerDemo()">
+              ✨ Preview Shimmer Effect
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="Storage.resetToDefaults(); UI.showToast('Dummy data restored!', 'info'); location.reload();">
+              🔄 Reset Demo Data
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="Admin.openCreateEventModal()">
+              ➕ Create New Event
+            </button>
+          </div>
+        </div>
+
+        <!-- 5 Statistics Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎟️</div>
+            <div class="stat-info">
+              <div class="stat-label">Total Events</div>
+              <div class="stat-value" id="stat-total-events">0</div>
+              <div class="stat-trend trend-up">
+                <span>↑ 12%</span>
+                <span class="text-muted text-xs">vs last month</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">📅</div>
+            <div class="stat-info">
+              <div class="stat-label">Upcoming Events</div>
+              <div class="stat-value" id="stat-upcoming-events">0</div>
+              <div class="stat-trend trend-up">
+                <span>↑ 4 new</span>
+                <span class="text-muted text-xs">this week</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--info);">👥</div>
+            <div class="stat-info">
+              <div class="stat-label">Total Users</div>
+              <div class="stat-value" id="stat-total-users">0</div>
+              <div class="stat-trend trend-up">
+                <span>↑ 18%</span>
+                <span class="text-muted text-xs">active users</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">📑</div>
+            <div class="stat-info">
+              <div class="stat-label">Total Bookings</div>
+              <div class="stat-value" id="stat-total-bookings">0</div>
+              <div class="stat-trend trend-up">
+                <span>↑ 24%</span>
+                <span class="text-muted text-xs">conversion</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);">💰</div>
+            <div class="stat-info">
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-value" id="stat-total-revenue">$0</div>
+              <div class="stat-trend trend-up">
+                <span>↑ 32%</span>
+                <span class="text-muted text-xs">growth rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Interactive Canvas Charts -->
+        <div class="charts-grid">
+          <!-- 1. Event Bookings Overview (Line Chart) -->
+          <div class="chart-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Event Bookings Overview</h3>
+                <div class="card-subtitle">Monthly ticket booking velocity</div>
+              </div>
+              <span class="badge badge-confirmed">Live Velocity</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="event-bookings-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- 3. Event Categories Distribution (Donut Chart) -->
+          <div class="chart-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Event Categories</h3>
+                <div class="card-subtitle">Distribution by event type</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="categories-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Revenue Overview (Bar Chart) Full Width -->
+        <div class="chart-card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Monthly Revenue Overview</h3>
+              <div class="card-subtitle">Gross ticket sales volume across all venues</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='reports.html'">
+              View Detailed Analytics →
+            </button>
+          </div>
+          <div class="chart-container" style="min-height: 260px;">
+            <canvas id="revenue-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Events Modern Table -->
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div>
+              <h3 class="card-title">Recent Events</h3>
+              <div class="card-subtitle">Recently created and active event schedules</div>
+            </div>
+            <div class="flex gap-2">
+              <a href="events.html" class="btn btn-primary btn-sm">Manage All Events →</a>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Organizer</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Venue</th>
+                  <th>Bookings</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recent-events-tbody">
+                <!-- Dynamically populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/charts.js"></script>
+  <script src="../js/events.js"></script>
+  <script src="../js/bookings.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Admin.initDashboard();
+    });
+  </script>
+</body>
+</html>

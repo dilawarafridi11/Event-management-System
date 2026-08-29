@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Management - Eventify Admin</title>
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <div class="brand-icon">🎟️</div>
+          <span class="brand-text">Eventify</span>
+        </a>
+        <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <div class="nav-section-title">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="events.html" class="nav-item">
+          <span class="nav-icon">🎟️</span>
+          <span class="nav-text">Events</span>
+        </a>
+        <a href="users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Users</span>
+        </a>
+        <a href="bookings.html" class="nav-item active">
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Bookings</span>
+        </a>
+        <a href="venues.html" class="nav-item">
+          <span class="nav-icon">🏛️</span>
+          <span class="nav-text">Venues</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Config</div>
+        <a href="reports.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="settings.html" class="user-snippet">
+          <div class="avatar user-avatar-display">A</div>
+          <div class="user-snippet-info">
+            <div class="user-snippet-name user-name-display">Alexander Wright</div>
+            <div class="user-snippet-role">Administrator</div>
+          </div>
+        </a>
+        <div style="margin-top: 0.5rem;">
+          <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
+            <span>🚪</span>
+            <span class="logout-btn-text">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <div class="header-title-group">
+            <h1>Booking Management</h1>
+            <p>Track ticket sales, payment transactions, and admission statuses.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-toggle-icon"></span>
+          </button>
+          <div class="dropdown-wrapper">
+            <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">A</button>
+            <div class="dropdown-menu">
+              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body fade-in">
+        <div class="flex justify-between items-center flex-wrap gap-4" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 class="text-xl font-bold">All Reservations & Passes</h2>
+            <p class="text-secondary text-sm">Review incoming bookings, confirm reservations, or issue digital passes.</p>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="Admin.exportReportCsv()">
+            📥 Export Bookings CSV
+          </button>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="input-icon-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="text" id="admin-bookings-search" class="form-control" placeholder="Search by booking ID, attendee name, or event title...">
+            </div>
+            <div>
+              <select id="admin-bookings-status-filter" class="form-control">
+                <option value="All">All Booking Statuses</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Attendee</th>
+                  <th>Event</th>
+                  <th>Tickets</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-bookings-tbody">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/bookings.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Admin.initBookingsPage();
+    });
+  </script>
+</body>
+</html>

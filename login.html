@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Eventify</title>
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; padding: 2rem 1rem;">
+
+  <!-- Theme Toggle Floating -->
+  <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+    <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+      <span class="theme-toggle-icon"></span>
+    </button>
+  </div>
+
+  <div style="width: 100%; max-width: 440px;" class="fade-in">
+    <!-- Brand Logo -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <a href="index.html" class="brand-logo" style="justify-content: center; margin-bottom: 0.5rem;">
+        <div class="brand-icon">🎟️</div>
+        <span>Eventify</span>
+      </a>
+      <p class="text-secondary text-sm">Welcome back! Sign in to access your dashboard.</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card" style="padding: 2.25rem;">
+      <!-- Role Toggle Tabs -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: var(--bg-primary); padding: 0.35rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+        <button type="button" id="role-tab-user" class="btn btn-sm btn-primary" onclick="setLoginRole('User')">
+          👤 User Portal
+        </button>
+        <button type="button" id="role-tab-admin" class="btn btn-sm btn-ghost" onclick="setLoginRole('Admin')">
+          🛡️ Admin Portal
+        </button>
+      </div>
+
+      <!-- Quick Demo Auto-Fill Banner -->
+      <div style="background: var(--accent-gradient-subtle); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <div class="text-xs font-bold text-primary" id="demo-badge-title">Quick Demo Login</div>
+          <div class="text-xs text-secondary" id="demo-badge-desc">Fill demo user credentials</div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="fill-demo-btn" onclick="fillDemoCredentials()">
+          1-Click Fill
+        </button>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address <span class="required">*</span></label>
+          <div class="input-icon-wrapper">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="login-email" class="form-control" placeholder="name@eventify.com" required value="user@eventify.com">
+          </div>
+          <span class="form-error" id="email-error">Please enter a valid email address</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">
+            <span>Password <span class="required">*</span></span>
+            <a href="#" class="text-xs" onclick="UI.showToast('Demo password is: user123 or admin123', 'info'); return false;">Forgot?</a>
+          </label>
+          <div class="input-icon-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="user123">
+          </div>
+          <span class="form-error" id="password-error">Password must be at least 6 characters</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-submit-btn" style="margin-top: 1rem;">
+          Sign In
+        </button>
+      </form>
+
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.875rem; color: var(--text-secondary);">
+        Don't have an account? <a href="register.html" class="font-semibold">Create one here</a>
+      </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <a href="index.html" class="text-secondary text-xs">← Return to Eventify Home</a>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    let activeRole = 'User';
+
+    function setLoginRole(role) {
+      activeRole = role;
+      const userTab = document.getElementById('role-tab-user');
+      const adminTab = document.getElementById('role-tab-admin');
+      const demoTitle = document.getElementById('demo-badge-title');
+      const demoDesc = document.getElementById('demo-badge-desc');
+
+      if (role === 'Admin') {
+        adminTab.className = 'btn btn-sm btn-primary';
+        userTab.className = 'btn btn-sm btn-ghost';
+        demoTitle.textContent = 'Admin Demo Access';
+        demoDesc.textContent = 'admin@eventify.com / admin123';
+        document.getElementById('login-email').value = 'admin@eventify.com';
+        document.getElementById('login-password').value = 'admin123';
+      } else {
+        userTab.className = 'btn btn-sm btn-primary';
+        adminTab.className = 'btn btn-sm btn-ghost';
+        demoTitle.textContent = 'User Demo Access';
+        demoDesc.textContent = 'user@eventify.com / user123';
+        document.getElementById('login-email').value = 'user@eventify.com';
+        document.getElementById('login-password').value = 'user123';
+      }
+    }
+
+    function fillDemoCredentials() {
+      if (activeRole === 'Admin') {
+        document.getElementById('login-email').value = 'admin@eventify.com';
+        document.getElementById('login-password').value = 'admin123';
+      } else {
+        document.getElementById('login-email').value = 'user@eventify.com';
+        document.getElementById('login-password').value = 'user123';
+      }
+      UI.showToast('Credentials filled. Click Sign In to proceed.', 'info');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const submitBtn = document.getElementById('login-submit-btn');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spin">↻</span> Signing In...`;
+
+      setTimeout(() => {
+        const result = Auth.login(email, password);
+
+        if (!result.success) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+          UI.showToast(result.message, 'error', 'Login Failed');
+          return;
+        }
+
+        UI.showToast(`Welcome back, ${result.user.name}!`, 'success', 'Signed In');
+
+        setTimeout(() => {
+          if (result.user.role === 'Admin') {
+            window.location.href = 'admin/dashboard.html';
+          } else {
+            window.location.href = 'user/dashboard.html';
+          }
+        }, 500);
+      }, 600);
+    }
+  </script>
+</body>
+</html>

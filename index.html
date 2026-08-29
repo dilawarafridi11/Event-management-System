@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventify - Premium SaaS Event Management & Ticketing Platform</title>
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar-public">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🎟️</div>
+        <span>Eventify</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#featured-events" class="nav-link">Explore Events</a>
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#features" class="nav-link">Why Eventify</a>
+        <a href="#stats" class="nav-link">Platform Stats</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="theme-toggle-icon"></span>
+        </button>
+
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-badge">
+        <span>✨ The Next-Generation Event Platform</span>
+      </div>
+      <h1 class="hero-title">
+        Discover, Book & Experience<br>
+        <span class="gradient-text">World-Class Events</span>
+      </h1>
+      <p class="hero-desc">
+        Seamlessly organize high-impact conferences, concert festivals, and workshops. Complete with digital QR passes, real-time analytics, and instant seat reservations.
+      </p>
+
+      <div class="hero-actions">
+        <a href="user/events.html" class="btn btn-primary btn-lg">
+          <span>Explore All Events</span>
+          <span>→</span>
+        </a>
+        <a href="login.html" class="btn btn-secondary btn-lg">
+          <span>Admin & User Demo</span>
+        </a>
+      </div>
+
+      <!-- Quick Platform Stats Counter -->
+      <div class="stats-grid" id="stats" style="margin-top: 4rem; max-width: 1000px; margin-left: auto; margin-right: auto;">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎟️</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Events Hosted</div>
+            <div class="stat-value" id="landing-stat-events">1,450+</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">👥</div>
+          <div class="stat-info">
+            <div class="stat-label">Active Attendees</div>
+            <div class="stat-value" id="landing-stat-attendees">85,200+</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);">🏛️</div>
+          <div class="stat-info">
+            <div class="stat-label">Partner Venues</div>
+            <div class="stat-value" id="landing-stat-venues">320+</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">⭐</div>
+          <div class="stat-info">
+            <div class="stat-label">User Satisfaction</div>
+            <div class="stat-value" id="landing-stat-rating">99.4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Categories Section -->
+  <section class="container" id="categories" style="padding: 4rem 1.5rem;">
+    <div class="flex justify-between items-end flex-wrap gap-4" style="margin-bottom: 2.5rem;">
+      <div>
+        <span class="category-tag">BROWSE CATEGORIES</span>
+        <h2 style="font-size: 2rem; margin-top: 0.5rem;">Find Events by Interest</h2>
+      </div>
+      <a href="user/events.html" class="btn btn-outline btn-sm">View All Categories →</a>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1.25rem;">
+      <a href="user/events.html?cat=Conference" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎤</div>
+        <div class="font-bold text-sm text-primary">Conferences</div>
+      </a>
+      <a href="user/events.html?cat=Concert" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎵</div>
+        <div class="font-bold text-sm text-primary">Concerts</div>
+      </a>
+      <a href="user/events.html?cat=Workshop" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💻</div>
+        <div class="font-bold text-sm text-primary">Workshops</div>
+      </a>
+      <a href="user/events.html?cat=Wedding" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💍</div>
+        <div class="font-bold text-sm text-primary">Weddings</div>
+      </a>
+      <a href="user/events.html?cat=Seminar" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌱</div>
+        <div class="font-bold text-sm text-primary">Seminars</div>
+      </a>
+      <a href="user/events.html?cat=Sports" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+        <div class="font-bold text-sm text-primary">Sports</div>
+      </a>
+      <a href="user/events.html?cat=Exhibition" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎨</div>
+        <div class="font-bold text-sm text-primary">Exhibitions</div>
+      </a>
+      <a href="user/events.html?cat=Party" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🍸</div>
+        <div class="font-bold text-sm text-primary">Parties</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Events Section -->
+  <section class="container" id="featured-events" style="padding: 2rem 1.5rem 5rem;">
+    <div class="flex justify-between items-end flex-wrap gap-4" style="margin-bottom: 2.5rem;">
+      <div>
+        <span class="category-tag">FEATURED EVENTS</span>
+        <h2 style="font-size: 2rem; margin-top: 0.5rem;">Trending & Upcoming Experiences</h2>
+      </div>
+      <a href="user/events.html" class="btn btn-primary btn-sm">Explore All Events →</a>
+    </div>
+
+    <!-- Events Grid Container -->
+    <div class="events-grid" id="landing-featured-events-grid">
+      <!-- Skeleton shimmer placeholders will load here then transition to real content -->
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container" id="features" style="padding: 3rem 1.5rem 6rem;">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem;">
+      <span class="category-tag">PLATFORM POWER</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0.5rem; margin-bottom: 1rem;">Everything You Need to Run Flawless Events</h2>
+      <p class="text-secondary">From automated ticketing to venue coordination and live sales analytics.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">🎟️</div>
+        <h3 class="feature-title">Digital QR Passes</h3>
+        <p class="text-secondary text-sm">Instant digital admission passes with verification barcodes, printable formats, and offline Apple Wallet-style styling.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">📊</div>
+        <h3 class="feature-title">Real-Time Analytics</h3>
+        <p class="text-secondary text-sm">Monitor revenue, ticket velocity, and occupancy rates with pure Canvas interactive graphs and financial export tools.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">🏛️</div>
+        <h3 class="feature-title">Venue Coordination</h3>
+        <p class="text-secondary text-sm">Manage halls, capacities, pricing tiers, and equipment requirements with full venue availability calendars.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">🌓</div>
+        <h3 class="feature-title">Dark & Light Themes</h3>
+        <p class="text-secondary text-sm">Crafted with high-contrast dark mode and crisp light mode themes that persist seamlessly across sessions.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">⚡</div>
+        <h3 class="feature-title">Instant Seat Reservations</h3>
+        <p class="text-secondary text-sm">Automated seat capacity tracking prevents overselling and handles cancellations cleanly in real time.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">🛡️</div>
+        <h3 class="feature-title">Dual Dashboards</h3>
+        <p class="text-secondary text-sm">Dedicated administrative command center and intuitive attendee self-service ticketing dashboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="container" style="margin-bottom: 6rem;">
+    <div class="card" style="background: var(--accent-gradient); color: #fff; padding: 4rem 2rem; text-align: center; border-radius: var(--radius-xl); box-shadow: var(--shadow-glow);">
+      <h2 style="font-size: 2.5rem; color: #fff; margin-bottom: 1rem;">Ready to Host or Attend Your Next Event?</h2>
+      <p style="color: rgba(255, 255, 255, 0.9); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
+        Experience the modern standard in event management. Explore the Admin Dashboard or dive into attendee ticketing now.
+      </p>
+      <div class="flex justify-center gap-4 flex-wrap">
+        <a href="login.html" class="btn btn-secondary btn-lg" style="background:#ffffff; color:#0f172a; border:none; font-weight:700;">
+          Launch Demo Dashboards
+        </a>
+        <a href="register.html" class="btn btn-outline btn-lg" style="color:#ffffff; border-color:rgba(255,255,255,0.6);">
+          Create Free Account
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-public">
+    <div class="container">
+      <div class="grid" style="grid-template-columns: 2fr repeat(3, 1fr); gap: 3rem;">
+        <div>
+          <div class="brand-logo" style="margin-bottom: 1rem;">
+            <div class="brand-icon">🎟️</div>
+            <span>Eventify</span>
+          </div>
+          <p class="text-secondary text-sm" style="max-width: 320px; line-height: 1.6;">
+            Final Year Project (FYP) SaaS Event Management Platform built with pure HTML5, CSS3, and Vanilla JavaScript.
+          </p>
+        </div>
+
+        <div>
+          <div class="font-bold text-sm" style="margin-bottom: 1rem;">Navigation</div>
+          <ul style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+            <li><a href="index.html" class="text-secondary">Home</a></li>
+            <li><a href="user/events.html" class="text-secondary">Discover Events</a></li>
+            <li><a href="login.html" class="text-secondary">Sign In</a></li>
+            <li><a href="register.html" class="text-secondary">Register</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="font-bold text-sm" style="margin-bottom: 1rem;">Dashboards</div>
+          <ul style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+            <li><a href="admin/dashboard.html" class="text-secondary">Admin Dashboard</a></li>
+            <li><a href="user/dashboard.html" class="text-secondary">User Dashboard</a></li>
+            <li><a href="user/tickets.html" class="text-secondary">Digital Tickets</a></li>
+            <li><a href="admin/reports.html" class="text-secondary">Sales Reports</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="font-bold text-sm" style="margin-bottom: 1rem;">Demo Logins</div>
+          <p class="text-xs text-muted" style="margin-bottom: 0.5rem;"><strong>Admin:</strong> admin@eventify.com</p>
+          <p class="text-xs text-muted" style="margin-bottom: 0.5rem;"><strong>User:</strong> user@eventify.com</p>
+          <p class="text-xs text-muted"><strong>Password:</strong> admin123 / user123</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Eventify Inc. All rights reserved. Developed as FYP Event Management System.</div>
+        <div class="flex gap-4">
+          <a href="#" class="text-muted text-xs">Privacy Policy</a>
+          <a href="#" class="text-muted text-xs">Terms of Service</a>
+          <a href="#" class="text-muted text-xs">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/bookings.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('landing-featured-events-grid');
+      if (grid) {
+        UI.simulateLoading(grid, () => {
+          const events = Storage.getEvents();
+          const featured = events.filter(e => e.featured || e.status === 'Upcoming').slice(0, 6);
+          grid.innerHTML = featured.map(e => EventsManager.renderEventCard(e, true)).join('');
+        }, 'events', 6, 400);
+      }
+    });
+  </script>
+</body>
+</html>

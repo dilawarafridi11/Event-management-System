@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venue Management - Eventify Admin</title>
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <div class="brand-icon">🎟️</div>
+          <span class="brand-text">Eventify</span>
+        </a>
+        <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <div class="nav-section-title">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="events.html" class="nav-item">
+          <span class="nav-icon">🎟️</span>
+          <span class="nav-text">Events</span>
+        </a>
+        <a href="users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Users</span>
+        </a>
+        <a href="bookings.html" class="nav-item">
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Bookings</span>
+        </a>
+        <a href="venues.html" class="nav-item active">
+          <span class="nav-icon">🏛️</span>
+          <span class="nav-text">Venues</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Config</div>
+        <a href="reports.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="settings.html" class="user-snippet">
+          <div class="avatar user-avatar-display">A</div>
+          <div class="user-snippet-info">
+            <div class="user-snippet-name user-name-display">Alexander Wright</div>
+            <div class="user-snippet-role">Administrator</div>
+          </div>
+        </a>
+        <div style="margin-top: 0.5rem;">
+          <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
+            <span>🚪</span>
+            <span class="logout-btn-text">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <div class="header-title-group">
+            <h1>Venue Management</h1>
+            <p>Coordinate auditorium halls, event spaces, pricing, and availability.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-toggle-icon"></span>
+          </button>
+          <div class="dropdown-wrapper">
+            <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">A</button>
+            <div class="dropdown-menu">
+              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body fade-in">
+        <div class="flex justify-between items-center flex-wrap gap-4" style="margin-bottom: 2rem;">
+          <div>
+            <h2 class="text-xl font-bold">Partner Venues & Locations</h2>
+            <p class="text-secondary text-sm">Review venue amenities, capacities, and daily rental rates.</p>
+          </div>
+          <button class="btn btn-primary" onclick="Admin.openAddVenueModal()">
+            ➕ Add New Venue
+          </button>
+        </div>
+
+        <!-- Venue Cards Grid -->
+        <div class="grid" id="admin-venues-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+          <!-- Populated via admin.js -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Admin.initVenuesPage();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+/* ==========================================================================
+   EVENTIFY - Enhanced Animations, Shimmer Skeleton Engine & Micro-interactions
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Ultra-Smooth Glowing Shimmer & Skeleton System
+   ========================================================================== */
+@keyframes shimmer {
+  0% {
+    background-position: -800px 0;
+  }
+  100% {
+    background-position: 800px 0;
+  }
+}
+
+.skeleton,
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(99, 102, 241, 0.22) 50%,
+    rgba(255, 255, 255, 0.08) 75%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+[data-theme="light"] .skeleton,
+[data-theme="light"] .skeleton-box {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.03) 0%,
+    rgba(0, 0, 0, 0.07) 25%,
+    rgba(99, 102, 241, 0.18) 50%,
+    rgba(0, 0, 0, 0.07) 75%,
+    rgba(0, 0, 0, 0.03) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Skeleton Specific Shapes */
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.skeleton-text.sm { height: 10px; width: 50%; }
+.skeleton-text.md { height: 14px; width: 75%; }
+.skeleton-text.lg { height: 22px; width: 40%; }
+
+.skeleton-circle {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+/* Skeleton Component Cards */
+.skeleton-stat-card {
+  height: 110px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+}
+
+.skeleton-event-card {
+  height: 390px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+}
+
+.skeleton-table-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-table-row {
+  height: 46px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-chart {
+  height: 290px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+}
+
+.skeleton-profile {
+  height: 380px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-glass);
+}
+
+/* ==========================================================================
+   2. Page, Modal & Dropdown Animations
+   ========================================================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(99, 102, 241, 0);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2.2s infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.85s linear infinite;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   3. Premium Hover & Micro-interactions
+   ========================================================================== */
+
+/* Enhanced Card Hover */
+.card,
+.feature-card,
+.stat-card {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-interactive:hover,
+.stat-card:hover,
+.feature-card:hover {
+  transform: translateY(-9px) scale(1.01);
+  box-shadow: 0 20px 42px -8px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.35);
+  border-color: rgba(99, 102, 241, 0.55);
+}
+
+[data-theme="light"] .card-interactive:hover,
+[data-theme="light"] .stat-card:hover,
+[data-theme="light"] .feature-card:hover {
+  box-shadow: 0 20px 42px -8px rgba(0, 0, 0, 0.12), 0 0 25px rgba(99, 102, 241, 0.2);
+}
+
+/* Event Card Image Zoom & Title Color Transition */
+.event-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-card:hover {
+  transform: translateY(-9px) scale(1.01);
+  box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.55), 0 0 28px rgba(99, 102, 241, 0.38);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+.event-card:hover .event-card-title {
+  color: var(--accent-primary);
+  transition: color 0.25s ease;
+}
+
+.event-card .event-card-img {
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-card:hover .event-card-img {
+  transform: scale(1.1);
+}
+
+/* Button Hover Scale & Glow */
+.btn {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.24s ease,
+              border-color 0.24s ease,
+              color 0.24s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 10px 28px rgba(99, 102, 241, 0.6), 0 0 16px rgba(139, 92, 246, 0.4);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-icon {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-icon:hover {
+  transform: scale(1.12);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+}
+
+.btn-icon svg,
+.btn-icon span {
+  transition: transform 0.25s ease;
+}
+
+.btn-icon:hover svg,
+.btn-icon:hover span {
+  transform: scale(1.15) rotate(6deg);
+}
+
+/* Table Row Smooth Highlight */
+.data-table tbody tr {
+  transition: background-color 0.22s ease, transform 0.22s ease;
+}
+
+.data-table tbody tr:hover td {
+  background-color: var(--bg-hover);
+}
+
+/* Sidebar Nav Item Hover Highlight & Indicator */
+.sidebar .nav-item {
+  position: relative;
+  transition: background 0.22s ease, color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+}
+
+.sidebar .nav-item:hover {
+  transform: translateX(6px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.sidebar .nav-item.active {
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.45);
+}
+
+.sidebar .nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+/* Favorite heart button pop */
+.event-card-fav-btn {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.25s ease, color 0.25s ease;
+}
+
+.event-card-fav-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+}
