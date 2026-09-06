@@ -88,7 +88,7 @@ const Auth = {
       role: userData.role || 'User',
       phone: userData.phone || '+1 (555) 000-0000',
       location: userData.location || 'New York, USA',
-      avatar: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
+      avatar: userData.avatar || `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
       status: userData.role === 'Organizer' ? 'Pending' : 'Active'
     });
 

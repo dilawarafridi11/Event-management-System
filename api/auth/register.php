@@ -46,7 +46,8 @@ if ($checkStmt->fetch()) {
 $userId = 'USR-' . rand(200, 999);
 $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 $registeredDate = date('Y-m-d');
-$avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+$inputAvatar = trim($input['avatar'] ?? '');
+$avatar = !empty($inputAvatar) ? $inputAvatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
 $stmt = $pdo->prepare("INSERT INTO users (id, name, email, password, role, phone, location, avatar, events_booked, status, registered_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 $stmt->execute([

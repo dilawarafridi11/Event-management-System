@@ -24,7 +24,7 @@ CREATE TABLE `users` (
   `role` ENUM('SuperAdmin', 'Organizer', 'User') NOT NULL DEFAULT 'User',
   `phone` VARCHAR(50) DEFAULT NULL,
   `location` VARCHAR(150) DEFAULT NULL,
-  `avatar` VARCHAR(255) DEFAULT NULL,
+  `avatar` LONGTEXT DEFAULT NULL,
   `events_booked` INT(11) NOT NULL DEFAULT 0,
   `status` ENUM('Active', 'Inactive', 'Pending') NOT NULL DEFAULT 'Active',
   `registered_date` DATE NOT NULL,
