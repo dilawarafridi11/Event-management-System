@@ -16,11 +16,18 @@ const App = {
   setupRoleBasedUI() {
     if (typeof Auth !== 'undefined') {
       const session = Auth.getSession();
-      if (session && session.role === 'Organizer') {
-        const usersNav = document.querySelector('a[href="users.html"], a[href="admin/users.html"]');
-        if (usersNav) usersNav.style.display = 'none';
-        const settingsNav = document.querySelector('a[href="settings.html"], a[href="admin/settings.html"]');
-        if (settingsNav) settingsNav.style.display = 'none';
+      if (session) {
+        if (session.role === 'Organizer') {
+          // Hide Users and Settings for Organizers
+          const usersNav = document.querySelector('a[href="users.html"], a[href="admin/users.html"]');
+          if (usersNav) usersNav.style.display = 'none';
+          const settingsNav = document.querySelector('a[href="settings.html"], a[href="admin/settings.html"]');
+          if (settingsNav) settingsNav.style.display = 'none';
+        } else if (session.role === 'SuperAdmin') {
+          // Hide Create Event button for SuperAdmin
+          const createEventBtn = document.querySelector('button[onclick="Admin.openCreateEventModal()"]');
+          if (createEventBtn) createEventBtn.style.display = 'none';
+        }
       }
     }
   },
