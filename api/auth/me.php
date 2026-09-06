@@ -40,13 +40,17 @@ if ($method === 'GET') {
         sendError('User ID is required', 400);
     }
 
-    if (!empty($newPassword)) {
-        $hash = password_hash($newPassword, PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, location = ?, avatar = ?, password = ? WHERE id = ?");
-        $stmt->execute([$name, $phone, $location, $avatar, $hash, $userId]);
-    } else {
-        $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, location = ?, avatar = ? WHERE id = ?");
-        $stmt->execute([$name, $phone, $location, $avatar, $userId]);
+    try {
+        if (!empty($newPassword)) {
+            $hash = password_hash($newPassword, PASSWORD_BCRYPT);
+            $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, location = ?, avatar = ?, password = ? WHERE id = ?");
+            $stmt->execute([$name, $phone, $location, $avatar, $hash, $userId]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, location = ?, avatar = ? WHERE id = ?");
+            $stmt->execute([$name, $phone, $location, $avatar, $userId]);
+        }
+    } catch (PDOException $e) {
+        sendError('Database error: Unable to update profile. Try a smaller image.', 500);
     }
 
     $stmtGet = $pdo->prepare("SELECT id, name, email, role, phone, location, avatar, events_booked, status, registered_date FROM users WHERE id = ?");

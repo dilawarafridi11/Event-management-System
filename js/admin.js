@@ -602,6 +602,63 @@ const Admin = {
     this.renderUsersTable();
   },
 
+  async openUserModal(userId) {
+    let user = Storage.getUserById(userId);
+    if (typeof API !== 'undefined' && API.getUserProfile) {
+      try {
+        const res = await API.getUserProfile(userId);
+        if (res && res.success && res.data) user = res.data;
+      } catch(e) {}
+    }
+
+    if (!user) {
+      UI.showToast('User not found.', 'error');
+      return;
+    }
+
+    let modal = document.getElementById('user-details-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'user-details-modal';
+      modal.className = 'modal-overlay';
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div class="modal-container" style="max-width: 450px;">
+        <div class="modal-header">
+          <h3 class="modal-title">Attendee Profile</h3>
+          <button class="modal-close" onclick="UI.closeModal('user-details-modal')">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="avatar" style="width: 100px; height: 100px; margin: 0 auto 1.5rem auto; background-image: url('${user.avatar || '../images/placeholder.jpg'}'); background-size: cover; background-position: center; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
+          <h2 class="font-bold text-xl" style="margin-bottom: 0.25rem;">${user.name}</h2>
+          <p class="text-muted text-sm" style="margin-bottom: 1.5rem;">${user.role}</p>
+          
+          <div class="grid" style="grid-template-columns: 1fr; gap: 0.75rem; text-align: left;">
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+              <div class="text-xs text-muted" style="margin-bottom: 0.25rem;">Email Address</div>
+              <div class="font-semibold">${user.email}</div>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+              <div class="text-xs text-muted" style="margin-bottom: 0.25rem;">Phone Number</div>
+              <div class="font-semibold">${user.phone || 'Not provided'}</div>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+              <div class="text-xs text-muted" style="margin-bottom: 0.25rem;">Location</div>
+              <div class="font-semibold">${user.location || 'Not provided'}</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-full" onclick="UI.closeModal('user-details-modal')">Close</button>
+        </div>
+      </div>
+    `;
+
+    UI.openModal('user-details-modal');
+  },
+
   deleteUserAction(userId) {
     const user = Storage.getUserById(userId);
     if (user && user.role === 'SuperAdmin') {
@@ -674,7 +731,7 @@ const Admin = {
       <tr>
         <td><strong>${b.id}</strong></td>
         <td>
-          <div class="font-semibold text-primary">${b.userName}</div>
+          <div class="font-semibold text-primary" style="cursor: pointer; text-decoration: underline; text-underline-offset: 2px;" onclick="Admin.openUserModal('${b.userId}')" title="View Attendee Profile">${b.userName}</div>
           <div class="text-xs text-muted">${b.userEmail}</div>
         </td>
         <td>

@@ -49,20 +49,24 @@ $registeredDate = date('Y-m-d');
 $inputAvatar = trim($input['avatar'] ?? '');
 $avatar = !empty($inputAvatar) ? $inputAvatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
-$stmt = $pdo->prepare("INSERT INTO users (id, name, email, password, role, phone, location, avatar, events_booked, status, registered_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->execute([
-    $userId,
-    $name,
-    $email,
-    $passwordHash,
-    $role,
-    $phone,
-    $location,
-    $avatar,
-    0,
-    $status,
-    $registeredDate
-]);
+try {
+    $stmt = $pdo->prepare("INSERT INTO users (id, name, email, password, role, phone, location, avatar, events_booked, status, registered_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([
+        $userId,
+        $name,
+        $email,
+        $passwordHash,
+        $role,
+        $phone,
+        $location,
+        $avatar,
+        0,
+        $status,
+        $registeredDate
+    ]);
+} catch (PDOException $e) {
+    sendError('Database error: Unable to save account profile. Try a smaller image.', 500);
+}
 
 // Create Welcome Notification
 $notifId = 'NOTIF-' . rand(100, 999);
