@@ -30,6 +30,10 @@ if (!$user) {
     sendError('Invalid email or password', 401);
 }
 
+if ($user['status'] === 'Pending') {
+    sendError('Your organizer account is pending approval by a Super Admin.', 403);
+}
+
 if ($user['status'] !== 'Active') {
     sendError('Your account has been deactivated. Please contact administrator.', 403);
 }

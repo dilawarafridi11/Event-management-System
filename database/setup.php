@@ -29,8 +29,8 @@ if ($requestMethod === 'POST' || isset($_GET['auto']) || $isCli) {
         // 2. Create Database if not exists
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `$dbname`");
-        $details[] = "<i class="fa-solid fa-check"></i> Connected to MySQL server successfully.";
-        $details[] = "<i class="fa-solid fa-check"></i> Created/Verified database: <strong>$dbname</strong>";
+        $details[] = "<i class='fa-solid fa-check'></i> Connected to MySQL server successfully.";
+        $details[] = "<i class='fa-solid fa-check'></i> Created/Verified database: <strong>$dbname</strong>";
 
         // 3. Read SQL schema file
         $sqlPath = __DIR__ . '/eventify.sql';
@@ -42,7 +42,7 @@ if ($requestMethod === 'POST' || isset($_GET['auto']) || $isCli) {
 
         // Execute SQL script
         $pdo->exec($sqlContent);
-        $details[] = "<i class="fa-solid fa-check"></i> Successfully executed all SQL migrations and initialized tables.";
+        $details[] = "<i class='fa-solid fa-check'></i> Successfully executed all SQL migrations and initialized tables.";
 
         // Count seeded records
         $stmtUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
@@ -52,7 +52,7 @@ if ($requestMethod === 'POST' || isset($_GET['auto']) || $isCli) {
         $stmtPromos = $pdo->query("SELECT COUNT(*) FROM promos")->fetchColumn();
         $stmtReviews = $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn();
 
-        $details[] = "<i class="fa-solid fa-check"></i> Seeded <strong>$stmtUsers</strong> Users, <strong>$stmtEvents</strong> Events, <strong>$stmtVenues</strong> Venues, <strong>$stmtBookings</strong> Bookings, <strong>$stmtPromos</strong> Promo Codes, <strong>$stmtReviews</strong> Reviews.";
+        $details[] = "<i class='fa-solid fa-check'></i> Seeded <strong>$stmtUsers</strong> Users, <strong>$stmtEvents</strong> Events, <strong>$stmtVenues</strong> Venues, <strong>$stmtBookings</strong> Bookings, <strong>$stmtPromos</strong> Promo Codes, <strong>$stmtReviews</strong> Reviews.";
 
         $status = 'success';
         $message = "Database setup and seeding completed successfully!";

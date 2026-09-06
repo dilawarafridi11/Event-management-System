@@ -43,7 +43,7 @@
             <label class="form-label" for="reg-role">Account Type</label>
             <select id="reg-role" class="form-control">
               <option value="User">Event Attendee</option>
-              <option value="Admin">Event Organizer</option>
+              <option value="Organizer">Event Organizer</option>
             </select>
           </div>
         </div>
@@ -192,7 +192,7 @@
             token: apiResult.data.token
           };
 
-          if (user.role === 'Admin') {
+          if (user.role === 'SuperAdmin' || user.role === 'Organizer') {
             localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(sessionData));
           } else {
             localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(sessionData));
@@ -200,7 +200,7 @@
 
           UI.showToast('Account created successfully! Redirecting...', 'success', 'Welcome');
           setTimeout(() => {
-            window.location.href = user.role === 'Admin' ? 'admin/dashboard.html' : 'user/dashboard.html';
+            window.location.href = (user.role === 'SuperAdmin' || user.role === 'Organizer') ? 'admin/dashboard.html' : 'user/dashboard.html';
           }, 600);
           return;
         }

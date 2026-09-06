@@ -15,9 +15,24 @@ const Admin = {
     }
 
     setTimeout(() => {
-      const events = Storage.getEvents();
-      const bookings = Storage.getBookings();
+      let events = Storage.getEvents();
+      let bookings = Storage.getBookings();
       const users = Storage.getUsers();
+      
+      const session = Auth.getSession();
+      if (session && session.role === 'Organizer') {
+        events = events.filter(e => e.organizerId === session.id);
+        const organizerEventIds = events.map(e => e.id);
+        bookings = bookings.filter(b => organizerEventIds.includes(b.eventId));
+        
+        // Hide UI elements not meant for Organizers
+        const usersNav = document.querySelector('a[href="users.html"]');
+        if (usersNav) usersNav.style.display = 'none';
+        const venuesNav = document.querySelector('a[href="venues.html"]');
+        if (venuesNav) venuesNav.style.display = 'none'; // Optional, if they shouldn't manage global venues
+        const settingsNav = document.querySelector('a[href="settings.html"]');
+        if (settingsNav) settingsNav.style.display = 'none';
+      }
 
       // Calculate KPI Stats
       const totalEvents = events.length;
@@ -173,7 +188,12 @@ const Admin = {
     const tbody = document.getElementById('admin-events-tbody');
     if (!tbody) return;
 
+    const session = Auth.getSession();
     let events = Storage.getEvents();
+    if (session && session.role === 'Organizer') {
+      events = events.filter(e => e.organizerId === session.id);
+    }
+
     const search = (document.getElementById('admin-events-search')?.value || '').toLowerCase();
     const category = document.getElementById('admin-events-cat-filter')?.value || 'All';
     const status = document.getElementById('admin-events-status-filter')?.value || 'All';
@@ -524,18 +544,18 @@ const Admin = {
         </td>
         <td>${u.email}</td>
         <td>${u.phone || 'N/A'}</td>
-        <td><span class="badge ${u.role === 'Admin' ? 'badge-confirmed' : 'badge-info'}">${u.role}</span></td>
+        <td><span class="badge ${u.role === 'SuperAdmin' ? 'badge-confirmed' : (u.role === 'Organizer' ? 'badge-warning' : 'badge-info')}">${u.role}</span></td>
         <td>${u.registeredDate || '2026-01-01'}</td>
         <td><strong>${u.eventsBooked || 0}</strong> events</td>
         <td>
-          <span class="badge ${u.status === 'Active' ? 'badge-success' : 'badge-danger'}">
+          <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">
             ${u.status || 'Active'}
           </span>
         </td>
         <td>
           <div class="action-btns">
-            <button class="btn btn-icon btn-sm" onclick="Admin.toggleUserStatus('${u.id}')" title="Toggle Active/Inactive">
-              ${u.status === 'Active' ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>'}
+            <button class="btn btn-icon btn-sm" onclick="Admin.toggleUserStatus('${u.id}')" title="${u.status === 'Pending' ? 'Approve Organizer' : 'Toggle Active/Inactive'}">
+              ${u.status === 'Pending' ? '<i class="fa-solid fa-check"></i>' : (u.status === 'Active' ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>')}
             </button>
             <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteUserAction('${u.id}')" title="Delete User">
               <i class="fa-solid fa-trash"></i>
@@ -549,19 +569,24 @@ const Admin = {
   toggleUserStatus(userId) {
     const user = Storage.getUserById(userId);
     if (!user) return;
-    if (user.role === 'Admin') {
+    if (user.role === 'SuperAdmin') {
       UI.showToast('Super Admin account status cannot be toggled.', 'warning');
       return;
     }
-    user.status = user.status === 'Active' ? 'Inactive' : 'Active';
+    if (user.status === 'Pending') {
+      user.status = 'Active';
+      UI.showToast(`Organizer approved and marked as Active.`, 'success');
+    } else {
+      user.status = user.status === 'Active' ? 'Inactive' : 'Active';
+      UI.showToast(`User marked as ${user.status}.`, 'info');
+    }
     Storage.saveUser(user);
-    UI.showToast(`User marked as ${user.status}.`, 'info');
     this.renderUsersTable();
   },
 
   deleteUserAction(userId) {
     const user = Storage.getUserById(userId);
-    if (user && user.role === 'Admin') {
+    if (user && user.role === 'SuperAdmin') {
       UI.showToast('Super Admin account cannot be deleted.', 'error');
       return;
     }
@@ -605,7 +630,12 @@ const Admin = {
     const tbody = document.getElementById('admin-bookings-tbody');
     if (!tbody) return;
 
+    const session = Auth.getSession();
     let bookings = Storage.getBookings();
+    if (session && session.role === 'Organizer') {
+      const orgEventIds = Storage.getEvents().filter(e => e.organizerId === session.id).map(e => e.id);
+      bookings = bookings.filter(b => orgEventIds.includes(b.eventId));
+    }
     const search = (document.getElementById('admin-bookings-search')?.value || '').toLowerCase();
     const status = document.getElementById('admin-bookings-status-filter')?.value || 'All';
 

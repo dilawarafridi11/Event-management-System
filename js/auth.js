@@ -4,14 +4,17 @@
  */
 
 const Auth = {
-  // Check current session
   getSession() {
     try {
       const adminSess = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
-      if (adminSess) return { ...JSON.parse(adminSess), role: 'Admin' };
+      if (adminSess) {
+        const parsed = JSON.parse(adminSess);
+        if (parsed.role === 'Admin') parsed.role = 'SuperAdmin';
+        return parsed;
+      }
 
       const userSess = localStorage.getItem(STORAGE_KEYS.USER_SESSION);
-      if (userSess) return { ...JSON.parse(userSess), role: 'User' };
+      if (userSess) return JSON.parse(userSess);
 
       return null;
     } catch {
@@ -28,10 +31,20 @@ const Auth = {
       return { success: false, message: 'No account found with this email address.' };
     }
 
+    // Auto-migrate legacy Admin role
+    if (user.role === 'Admin') {
+      user.role = 'SuperAdmin';
+      Storage.saveUser(user);
+    }
+
     if (user.password !== password) {
       return { success: false, message: 'Invalid password. Please try again.' };
     }
 
+    if (user.status === 'Pending') {
+      return { success: false, message: 'Your organizer account is pending approval by a Super Admin.' };
+    }
+    
     if (user.status === 'Inactive') {
       return { success: false, message: 'Your account has been deactivated. Please contact support.' };
     }
@@ -52,7 +65,7 @@ const Auth = {
       loginTime: new Date().toISOString()
     };
 
-    if (user.role === 'Admin') {
+    if (user.role === 'SuperAdmin' || user.role === 'Organizer') {
       localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(sessionData));
     } else {
       localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(sessionData));
@@ -76,8 +89,12 @@ const Auth = {
       phone: userData.phone || '+1 (555) 000-0000',
       location: userData.location || 'New York, USA',
       avatar: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
-      status: 'Active'
+      status: userData.role === 'Organizer' ? 'Pending' : 'Active'
     });
+
+    if (newUser.status === 'Pending') {
+      return { success: false, message: 'Your organizer account is pending approval by a Super Admin.' };
+    }
 
     // Auto login
     this.login(newUser.email, userData.password);
@@ -105,8 +122,14 @@ const Auth = {
       return null;
     }
 
-    if (requiredRole && session.role !== requiredRole) {
-      if (session.role === 'Admin') {
+    // If 'Admin' is required, allow both SuperAdmin and Organizer
+    if (requiredRole === 'Admin') {
+      if (session.role !== 'SuperAdmin' && session.role !== 'Organizer' && session.role !== 'Admin') {
+        window.location.href = inSubDir ? '../user/dashboard.html' : 'user/dashboard.html';
+        return null;
+      }
+    } else if (requiredRole && session.role !== requiredRole) {
+      if (session.role === 'SuperAdmin' || session.role === 'Organizer' || session.role === 'Admin') {
         window.location.href = inSubDir ? '../admin/dashboard.html' : 'admin/dashboard.html';
       } else {
         window.location.href = inSubDir ? '../user/dashboard.html' : 'user/dashboard.html';

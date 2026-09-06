@@ -162,7 +162,7 @@ if ($method === 'GET') {
 
         // 8. Create user confirmation notification
         $notifId = 'NOTIF-' . rand(100, 999);
-        $notifStmt = $pdo->prepare("INSERT INTO notifications (id, user_id, title, message, time_ago, is_read, type, icon) VALUES (?, ?, 'Booking Confirmed!', ?, 'Just now', 0, 'success', '<i class="fa-solid fa-check"></i>')");
+        $notifStmt = $pdo->prepare("INSERT INTO notifications (id, user_id, title, message, time_ago, is_read, type, icon) VALUES (?, ?, 'Booking Confirmed!', ?, 'Just now', 0, 'success', '<i class=\'fa-solid fa-check\'></i>')");
         $notifStmt->execute([
             $notifId,
             $userId,

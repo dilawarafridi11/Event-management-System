@@ -20,6 +20,7 @@ if ($method === 'GET') {
     $sort = $_GET['sort'] ?? 'date-asc';
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+    $organizer_id = $_GET['organizer_id'] ?? null;
 
     $sql = "SELECT * FROM events WHERE 1=1";
     $params = [];
@@ -27,6 +28,11 @@ if ($method === 'GET') {
     if ($category !== 'All' && !empty($category)) {
         $sql .= " AND category = ?";
         $params[] = $category;
+    }
+
+    if (!empty($organizer_id)) {
+        $sql .= " AND organizer_id = ?";
+        $params[] = $organizer_id;
     }
 
     if (!empty($search)) {

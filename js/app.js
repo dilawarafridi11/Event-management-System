@@ -10,6 +10,19 @@ const App = {
     this.setupMobileMenu();
     this.setupLogoutButtons();
     this.setupGlobalSearch();
+    this.setupRoleBasedUI();
+  },
+
+  setupRoleBasedUI() {
+    if (typeof Auth !== 'undefined') {
+      const session = Auth.getSession();
+      if (session && session.role === 'Organizer') {
+        const usersNav = document.querySelector('a[href="users.html"], a[href="admin/users.html"]');
+        if (usersNav) usersNav.style.display = 'none';
+        const settingsNav = document.querySelector('a[href="settings.html"], a[href="admin/settings.html"]');
+        if (settingsNav) settingsNav.style.display = 'none';
+      }
+    }
   },
 
   // Highlight current page in sidebar navigation
