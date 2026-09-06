@@ -179,6 +179,20 @@
 
         if (apiResult && apiResult.success && apiResult.data && apiResult.data.user) {
           const user = apiResult.data.user;
+          
+          // Sync with local Storage for the hybrid frontend to see it
+          if (typeof Storage !== 'undefined') {
+            Storage.saveUser(user);
+          }
+
+          if (user.status === 'Pending') {
+            UI.showToast('Your organizer account is created but pending Super Admin approval.', 'info', 'Pending Approval', 5000);
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 3000);
+            return;
+          }
+
           // Save session to localStorage for route guards
           const sessionData = {
             id: user.id,

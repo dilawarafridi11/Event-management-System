@@ -566,7 +566,7 @@ const Admin = {
     `).join('');
   },
 
-  toggleUserStatus(userId) {
+  async toggleUserStatus(userId) {
     const user = Storage.getUserById(userId);
     if (!user) return;
     if (user.role === 'SuperAdmin') {
@@ -581,6 +581,12 @@ const Admin = {
       UI.showToast(`User marked as ${user.status}.`, 'info');
     }
     Storage.saveUser(user);
+    
+    // Sync with backend API if available
+    if (typeof API !== 'undefined' && API.toggleUserStatus) {
+      await API.toggleUserStatus(user.id, user.status);
+    }
+    
     this.renderUsersTable();
   },
 
