@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body style="display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; padding: 2rem 1rem;">
 
@@ -23,7 +24,7 @@
     <!-- Brand Logo -->
     <div style="text-align: center; margin-bottom: 2rem;">
       <a href="index.html" class="brand-logo" style="justify-content: center; margin-bottom: 0.5rem;">
-        <div class="brand-icon">🎟️</div>
+        <img src="images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
         <span>Eventify</span>
       </a>
       <p class="text-secondary text-sm">Welcome back! Sign in to access your dashboard.</p>
@@ -34,10 +35,10 @@
       <!-- Role Toggle Tabs -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: var(--bg-primary); padding: 0.35rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
         <button type="button" id="role-tab-user" class="btn btn-sm btn-primary" onclick="setLoginRole('User')">
-          👤 User Portal
+          <i class="fa-solid fa-user"></i> User Portal
         </button>
         <button type="button" id="role-tab-admin" class="btn btn-sm btn-ghost" onclick="setLoginRole('Admin')">
-          🛡️ Admin Portal
+          <i class="fa-solid fa-shield"></i> Admin Portal
         </button>
       </div>
 
@@ -56,7 +57,7 @@
         <div class="form-group">
           <label class="form-label" for="login-email">Email Address <span class="required">*</span></label>
           <div class="input-icon-wrapper">
-            <span class="input-icon">✉️</span>
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
             <input type="email" id="login-email" class="form-control" placeholder="name@eventify.com" required value="user@eventify.com">
           </div>
           <span class="form-error" id="email-error">Please enter a valid email address</span>
@@ -68,7 +69,7 @@
             <a href="#" class="text-xs" onclick="UI.showToast('Demo password is: user123 or admin123', 'info'); return false;">Forgot?</a>
           </label>
           <div class="input-icon-wrapper">
-            <span class="input-icon">🔒</span>
+            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
             <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="user123">
           </div>
           <span class="form-error" id="password-error">Password must be at least 6 characters</span>
@@ -92,6 +93,7 @@
 
   <script src="js/storage.js"></script>
   <script src="js/theme.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/ui.js"></script>
 
@@ -133,35 +135,75 @@
       UI.showToast('Credentials filled. Click Sign In to proceed.', 'info');
     }
 
-    function handleLogin(e) {
+    // Initialize seed data for offline fallback
+    Storage.init();
+
+    async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
       const submitBtn = document.getElementById('login-submit-btn');
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="spin">↻</span> Signing In...`;
+      submitBtn.innerHTML = `<span class="spin"><i class="fa-solid fa-rotate-right"></i></span> Signing In...`;
 
-      setTimeout(() => {
-        const result = Auth.login(email, password);
+      try {
+        // Try backend API login first
+        const apiResult = await API.login(email, password);
 
-        if (!result.success) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Sign In';
-          UI.showToast(result.message, 'error', 'Login Failed');
+        if (apiResult && apiResult.success && apiResult.data && apiResult.data.user) {
+          const user = apiResult.data.user;
+          // Save session to localStorage for route guards
+          const sessionData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            phone: user.phone,
+            location: user.location,
+            loginTime: new Date().toISOString(),
+            token: apiResult.data.token
+          };
+
+          if (user.role === 'Admin') {
+            localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(sessionData));
+          } else {
+            localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(sessionData));
+          }
+
+          UI.showToast(`Welcome back, ${user.name}!`, 'success', 'Signed In');
+          setTimeout(() => {
+            window.location.href = user.role === 'Admin' ? 'admin/dashboard.html' : 'user/dashboard.html';
+          }, 500);
           return;
         }
 
-        UI.showToast(`Welcome back, ${result.user.name}!`, 'success', 'Signed In');
+        // If API returned an error message (server is reachable but credentials wrong)
+        if (apiResult && apiResult.success === false && apiResult.message) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+          UI.showToast(apiResult.message, 'error', 'Login Failed');
+          return;
+        }
+      } catch (err) {
+        console.warn('[Login] API server unavailable, falling back to offline mode:', err);
+      }
 
-        setTimeout(() => {
-          if (result.user.role === 'Admin') {
-            window.location.href = 'admin/dashboard.html';
-          } else {
-            window.location.href = 'user/dashboard.html';
-          }
-        }, 500);
-      }, 600);
+      // Fallback: client-side localStorage auth (offline / demo mode)
+      const result = Auth.login(email, password);
+
+      if (!result.success) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+        UI.showToast(result.message, 'error', 'Login Failed');
+        return;
+      }
+
+      UI.showToast(`Welcome back, ${result.user.name}!`, 'success', 'Signed In');
+      setTimeout(() => {
+        window.location.href = result.user.role === 'Admin' ? 'admin/dashboard.html' : 'user/dashboard.html';
+      }, 500);
     }
   </script>
 </body>

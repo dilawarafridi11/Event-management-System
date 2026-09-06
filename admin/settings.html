@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <a href="dashboard.html" class="brand-logo">
-          <div class="brand-icon">🎟️</div>
+          <img src="../images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
           <span class="brand-text">Eventify</span>
         </a>
         <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
@@ -26,33 +27,37 @@
       <div class="sidebar-nav-container">
         <div class="nav-section-title">Main Menu</div>
         <a href="dashboard.html" class="nav-item">
-          <span class="nav-icon">📊</span>
+          <span class="nav-icon"><i class="fa-solid fa-chart-simple"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="events.html" class="nav-item">
-          <span class="nav-icon">🎟️</span>
+          <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
           <span class="nav-text">Events</span>
         </a>
         <a href="users.html" class="nav-item">
-          <span class="nav-icon">👥</span>
+          <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
           <span class="nav-text">Users</span>
         </a>
         <a href="bookings.html" class="nav-item">
-          <span class="nav-icon">📑</span>
+          <span class="nav-icon"><i class="fa-solid fa-file-invoice"></i></span>
           <span class="nav-text">Bookings</span>
         </a>
         <a href="venues.html" class="nav-item">
-          <span class="nav-icon">🏛️</span>
+          <span class="nav-icon"><i class="fa-solid fa-building-columns"></i></span>
           <span class="nav-text">Venues</span>
+        </a>
+        <a href="scanner.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-camera"></i></span>
+          <span class="nav-text">Gate Scanner</span>
         </a>
 
         <div class="nav-section-title">Analytics & Config</div>
         <a href="reports.html" class="nav-item">
-          <span class="nav-icon">📈</span>
+          <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
           <span class="nav-text">Reports</span>
         </a>
         <a href="settings.html" class="nav-item active">
-          <span class="nav-icon">⚙️</span>
+          <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
           <span class="nav-text">Settings</span>
         </a>
       </div>
@@ -67,7 +72,7 @@
         </a>
         <div style="margin-top: 0.5rem;">
           <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
-            <span>🚪</span>
+            <span><i class="fa-solid fa-door-open"></i></span>
             <span class="logout-btn-text">Sign Out</span>
           </button>
         </div>
@@ -79,7 +84,7 @@
       <!-- Top Header -->
       <header class="top-header">
         <div class="header-left">
-          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <button class="mobile-menu-btn" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
           <div class="header-title-group">
             <h1>Platform Settings</h1>
             <p>Configure general parameters, payment gateways, and system defaults.</p>
@@ -93,9 +98,9 @@
           <div class="dropdown-wrapper">
             <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">A</button>
             <div class="dropdown-menu">
-              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+              <a href="settings.html" class="dropdown-item"><i class="fa-solid fa-gear"></i> Settings</a>
               <div class="dropdown-divider"></div>
-              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+              <div class="dropdown-item text-danger" data-action="logout"><i class="fa-solid fa-door-open"></i> Sign Out</div>
             </div>
           </div>
         </div>
@@ -117,7 +122,7 @@
                 <div class="form-group">
                   <label class="form-label">Default Currency</label>
                   <select id="setting-currency" class="form-control">
-                    <option value="$">USD ($)</option>
+                    <option value="PKR ">USD (PKR )</option>
                     <option value="€">EUR (€)</option>
                     <option value="£">GBP (£)</option>
                   </select>
@@ -149,6 +154,37 @@
             </form>
           </div>
 
+          <!-- Promo Codes Management Card -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div class="flex justify-between items-center flex-wrap gap-2" style="margin-bottom: 1.25rem;">
+              <div>
+                <h3 class="card-title" style="margin-bottom: 0.25rem;"><i class="fa-solid fa-ticket"></i> Promo Codes & Discounts</h3>
+                <p class="text-secondary text-xs">Issue promotional coupon codes for ticket discounts during checkout.</p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="Admin.openAddPromoModal()">
+                <i class="fa-solid fa-plus"></i> Create Promo Code
+              </button>
+            </div>
+
+            <div class="table-container" style="overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Discount</th>
+                    <th>Description</th>
+                    <th>Min. Order</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-promos-tbody">
+                  <!-- Rendered via admin.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- Payment Gateways Card -->
           <div class="card" style="margin-bottom: 2rem;">
             <h3 class="card-title" style="margin-bottom: 0.5rem;">Payment Gateways Simulation</h3>
@@ -176,7 +212,7 @@
             <h3 class="card-title text-danger" style="margin-bottom: 0.5rem;">Data Reset & Maintenance</h3>
             <p class="text-secondary text-sm" style="margin-bottom: 1.25rem;">Reset all platform events, users, and bookings back to factory seed defaults.</p>
             <button type="button" class="btn btn-danger btn-sm" onclick="Storage.resetToDefaults(); UI.showToast('Platform reset to factory defaults.', 'info'); location.reload();">
-              ⚠️ Reset Database to Defaults
+              <i class="fa-solid fa-triangle-exclamation"></i> Reset Database to Defaults
             </button>
           </div>
         </div>

@@ -33,7 +33,7 @@ const Admin = {
       UI.animateCounter(document.getElementById('stat-upcoming-events'), upcomingEvents);
       UI.animateCounter(document.getElementById('stat-total-users'), totalUsers);
       UI.animateCounter(document.getElementById('stat-total-bookings'), totalBookings);
-      UI.animateCounter(document.getElementById('stat-total-revenue'), totalRevenue, '$');
+      UI.animateCounter(document.getElementById('stat-total-revenue'), totalRevenue, 'PKR ');
 
       // Render Canvas Charts
       this.renderDashboardCharts(events, bookings);
@@ -67,7 +67,7 @@ const Admin = {
     // 2. Bar Chart: Revenue Overview
     const revenueMonths = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
     const revenueValues = [2400, 3800, 5600, 8200, 9400, 12800];
-    Charts.renderBarChart('revenue-chart', revenueMonths, revenueValues, { prefix: '$' });
+    Charts.renderBarChart('revenue-chart', revenueMonths, revenueValues, { prefix: 'PKR ' });
 
     // 3. Donut Chart: Categories Distribution
     const catMap = {};
@@ -108,13 +108,13 @@ const Admin = {
         <td>
           <div class="action-btns">
             <button class="btn btn-icon btn-sm" onclick="EventsManager.viewEventDetails('${e.id}')" title="View Details">
-              👁️
+              <i class="fa-solid fa-eye"></i>
             </button>
             <button class="btn btn-icon btn-sm" onclick="Admin.openEditEventModal('${e.id}')" title="Edit Event">
-              ✏️
+              <i class="fa-solid fa-pen"></i>
             </button>
             <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteEventAction('${e.id}')" title="Delete Event">
-              🗑️
+              <i class="fa-solid fa-trash"></i>
             </button>
           </div>
         </td>
@@ -208,7 +208,7 @@ const Admin = {
       tbody.innerHTML = `
         <tr>
           <td colspan="8" style="text-align: center; padding: 3rem;">
-            <div class="empty-state-icon" style="margin: 0 auto 1rem;">🔍</div>
+            <div class="empty-state-icon" style="margin: 0 auto 1rem;"><i class="fa-solid fa-magnifying-glass"></i></div>
             <div class="font-bold text-base">No matching events found</div>
             <p class="text-secondary text-sm">Try adjusting your search terms or filters.</p>
           </td>
@@ -222,7 +222,7 @@ const Admin = {
               <img src="${e.image}" style="width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover;">
               <div>
                 <div class="font-bold text-primary">${e.title}</div>
-                <div class="text-xs text-muted">${e.id} • ${e.ticketPrice === 0 ? 'Free' : '$' + e.ticketPrice}</div>
+                <div class="text-xs text-muted">${e.id} • ${e.ticketPrice === 0 ? 'Free' : 'PKR ' + e.ticketPrice}</div>
               </div>
             </div>
           </td>
@@ -242,9 +242,9 @@ const Admin = {
           <td><span class="badge badge-${e.status.toLowerCase()}">${e.status}</span></td>
           <td>
             <div class="action-btns">
-              <button class="btn btn-icon btn-sm" onclick="EventsManager.viewEventDetails('${e.id}')" title="View Details">👁️</button>
-              <button class="btn btn-icon btn-sm" onclick="Admin.openEditEventModal('${e.id}')" title="Edit Event">✏️</button>
-              <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteEventAction('${e.id}')" title="Delete Event">🗑️</button>
+              <button class="btn btn-icon btn-sm" onclick="EventsManager.viewEventDetails('${e.id}')" title="View Details"><i class="fa-solid fa-eye"></i></button>
+              <button class="btn btn-icon btn-sm" onclick="Admin.openEditEventModal('${e.id}')" title="Edit Event"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteEventAction('${e.id}')" title="Delete Event"><i class="fa-solid fa-trash"></i></button>
             </div>
           </td>
         </tr>
@@ -344,7 +344,7 @@ const Admin = {
                 <input type="number" class="form-control" id="event-input-capacity" min="10" max="10000" value="200" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Price ($) <span class="required">*</span></label>
+                <label class="form-label">Price (PKR ) <span class="required">*</span></label>
                 <input type="number" class="form-control" id="event-input-price" min="0" value="99" required>
               </div>
             </div>
@@ -535,10 +535,10 @@ const Admin = {
         <td>
           <div class="action-btns">
             <button class="btn btn-icon btn-sm" onclick="Admin.toggleUserStatus('${u.id}')" title="Toggle Active/Inactive">
-              ${u.status === 'Active' ? '⏸️' : '▶️'}
+              ${u.status === 'Active' ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>'}
             </button>
             <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteUserAction('${u.id}')" title="Delete User">
-              🗑️
+              <i class="fa-solid fa-trash"></i>
             </button>
           </div>
         </td>
@@ -634,22 +634,22 @@ const Admin = {
           <div class="text-xs text-muted">${b.eventDate}</div>
         </td>
         <td><strong>${b.tickets}</strong> ticket(s)</td>
-        <td><strong>$${b.totalAmount}</strong></td>
+        <td><strong>PKR ${b.totalAmount}</strong></td>
         <td><span class="badge ${b.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}">${b.paymentStatus}</span></td>
         <td><span class="badge badge-${b.bookingStatus.toLowerCase()}">${b.bookingStatus}</span></td>
         <td>
           <div class="action-btns">
             <button class="btn btn-icon btn-sm" onclick="BookingsManager.showDigitalTicket('${b.id}')" title="View Ticket">
-              🎟️
+              <i class="fa-solid fa-ticket"></i>
             </button>
             ${b.bookingStatus === 'Pending' ? `
               <button class="btn btn-icon btn-sm text-success" onclick="Admin.updateBookingStatusAction('${b.id}', 'Confirmed')" title="Confirm">
-                ✓
+                <i class="fa-solid fa-check"></i>
               </button>
             ` : ''}
             ${b.bookingStatus !== 'Cancelled' ? `
               <button class="btn btn-icon btn-sm text-danger" onclick="BookingsManager.cancelBooking('${b.id}')" title="Cancel Booking">
-                ✕
+                <i class="fa-solid fa-xmark"></i>
               </button>
             ` : ''}
           </div>
@@ -689,11 +689,11 @@ const Admin = {
           </span>
         </div>
         <h3 class="card-title text-base" style="margin-bottom: 0.35rem;">${v.name}</h3>
-        <p class="text-xs text-secondary" style="margin-bottom: 0.75rem;">📍 ${v.location}</p>
+        <p class="text-xs text-secondary" style="margin-bottom: 0.75rem;"><i class="fa-solid fa-location-dot"></i> ${v.location}</p>
         
         <div class="flex justify-between text-xs" style="background: var(--bg-tertiary); padding: 0.6rem; border-radius: var(--radius-sm); margin-bottom: 1rem;">
           <div>Capacity: <strong>${v.capacity}</strong></div>
-          <div>Rate: <strong>$${v.price}/day</strong></div>
+          <div>Rate: <strong>PKR ${v.price}/day</strong></div>
         </div>
 
         <div class="flex gap-1 flex-wrap" style="margin-bottom: 1.25rem;">
@@ -701,10 +701,10 @@ const Admin = {
         </div>
 
         <div class="flex justify-between items-center" style="border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
-          <span class="text-xs text-muted">📞 ${v.contact}</span>
+          <span class="text-xs text-muted"><i class="fa-solid fa-phone"></i> ${v.contact}</span>
           <div class="flex gap-2">
-            <button class="btn btn-icon btn-sm" onclick="Admin.openEditVenueModal('${v.id}')" title="Edit Venue">✏️</button>
-            <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteVenueAction('${v.id}')" title="Delete Venue">🗑️</button>
+            <button class="btn btn-icon btn-sm" onclick="Admin.openEditVenueModal('${v.id}')" title="Edit Venue"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteVenueAction('${v.id}')" title="Delete Venue"><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>
       </div>
@@ -742,7 +742,7 @@ const Admin = {
                 <input type="number" class="form-control" id="venue-cap" min="20" value="400" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Daily Price ($)</label>
+                <label class="form-label">Daily Price (PKR )</label>
                 <input type="number" class="form-control" id="venue-price" min="100" value="2000" required>
               </div>
             </div>
@@ -783,6 +783,43 @@ const Admin = {
     this.renderVenuesGrid();
   },
 
+  openEditVenueModal(venueId) {
+    const venue = Storage.getVenueById(venueId);
+    if (!venue) {
+      UI.showToast('Venue not found', 'error');
+      return;
+    }
+
+    this.openAddVenueModal();
+    document.querySelector('#venue-form-modal .modal-title').textContent = 'Edit Venue: ' + venue.name;
+    
+    document.getElementById('venue-name').value = venue.name;
+    document.getElementById('venue-loc').value = venue.location;
+    document.getElementById('venue-cap').value = venue.capacity;
+    document.getElementById('venue-price').value = venue.price;
+    document.getElementById('venue-contact').value = venue.contact;
+    document.getElementById('venue-image').value = venue.image;
+
+    const form = document.querySelector('#venue-form-modal form');
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      Storage.saveVenue({
+        id: venue.id,
+        name: document.getElementById('venue-name').value,
+        location: document.getElementById('venue-loc').value,
+        capacity: parseInt(document.getElementById('venue-cap').value, 10),
+        price: parseFloat(document.getElementById('venue-price').value),
+        contact: document.getElementById('venue-contact').value,
+        image: document.getElementById('venue-image').value,
+        availability: venue.availability || 'Available',
+        amenities: venue.amenities || ['WiFi', 'AV System', 'Air Conditioning', 'Parking']
+      });
+      UI.closeModal('venue-form-modal');
+      UI.showToast('Venue updated successfully!', 'success', 'Venue Saved');
+      Admin.renderVenuesGrid();
+    };
+  },
+
   deleteVenueAction(venueId) {
     UI.confirm('Delete Venue', 'Are you sure you want to delete this venue record?', () => {
       Storage.deleteVenue(venueId);
@@ -797,26 +834,27 @@ const Admin = {
     const bookings = Storage.getBookings();
     const events = Storage.getEvents();
 
+    const curr = Storage.getCurrency();
     const totalRev = bookings.filter(b => b.paymentStatus === 'Paid').reduce((sum, b) => sum + b.totalAmount, 0);
     const avgTicket = bookings.length > 0 ? (totalRev / bookings.length).toFixed(2) : 0;
     const totalSeats = events.reduce((sum, e) => sum + e.capacity, 0);
     const totalBooked = events.reduce((sum, e) => sum + (e.bookedSeats || 0), 0);
     const occupancyRate = totalSeats > 0 ? Math.round((totalBooked / totalSeats) * 100) : 0;
 
-    UI.animateCounter(document.getElementById('report-total-revenue'), totalRev, '$');
-    UI.animateCounter(document.getElementById('report-avg-ticket'), avgTicket, '$');
+    UI.animateCounter(document.getElementById('report-total-revenue'), totalRev, curr);
+    UI.animateCounter(document.getElementById('report-avg-ticket'), avgTicket, curr);
     UI.animateCounter(document.getElementById('report-occupancy'), occupancyRate, '', '%');
     UI.animateCounter(document.getElementById('report-total-attendees'), totalBooked);
 
     // Render Analytics Chart
-    Charts.renderBarChart('report-revenue-bar-chart', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'], [1500, 2800, 4200, 6100, 7800, 9500, 11200, 14800]);
+    Charts.renderBarChart('report-revenue-bar-chart', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'], [1500, 2800, 4200, 6100, 7800, 9500, 11200, 14800], { prefix: curr });
   },
 
   exportReportCsv() {
     const bookings = Storage.getBookings();
-    let csv = 'Booking ID,Attendee,Email,Event,Date,Tickets,Total Amount,Payment Status,Booking Status\n';
+    let csv = 'Booking ID,Attendee,Email,Event,Date,Tier,Tickets,Total Amount,Payment Status,Booking Status,Check-In Status\n';
     bookings.forEach(b => {
-      csv += `"${b.id}","${b.userName}","${b.userEmail}","${b.eventTitle}","${b.eventDate}",${b.tickets},${b.totalAmount},"${b.paymentStatus}","${b.bookingStatus}"\n`;
+      csv += `"${b.id}","${b.userName}","${b.userEmail}","${b.eventTitle}","${b.eventDate}","${b.tierName || 'Standard'}",${b.tickets},${b.totalAmount},"${b.paymentStatus}","${b.bookingStatus}","${b.checkInStatus || 'Pending'}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -828,16 +866,24 @@ const Admin = {
     UI.showToast('CSV Financial report exported successfully!', 'success', 'Export');
   },
 
-  // 7. Settings Page
+  // 7. Settings Page & Promo Codes Management
   initSettingsPage() {
     Auth.requireAuth('Admin');
     const settings = Storage.getSettings();
     
-    document.getElementById('setting-site-title').value = settings.siteTitle || 'Eventify Platform';
-    document.getElementById('setting-currency').value = settings.currency || '$';
-    document.getElementById('setting-tax-rate').value = settings.taxRate || 8.5;
-    document.getElementById('setting-auto-confirm').checked = !!settings.autoConfirmBookings;
-    document.getElementById('setting-email-notif').checked = !!settings.emailNotifications;
+    const titleEl = document.getElementById('setting-site-title');
+    const currEl = document.getElementById('setting-currency');
+    const taxEl = document.getElementById('setting-tax-rate');
+    const autoEl = document.getElementById('setting-auto-confirm');
+    const emailEl = document.getElementById('setting-email-notif');
+
+    if (titleEl) titleEl.value = settings.siteTitle || 'Eventify Platform';
+    if (currEl) currEl.value = settings.currency || 'PKR ';
+    if (taxEl) taxEl.value = settings.taxRate || 8.5;
+    if (autoEl) autoEl.checked = !!settings.autoConfirmBookings;
+    if (emailEl) emailEl.checked = !!settings.emailNotifications;
+
+    this.renderPromosTable();
   },
 
   savePlatformSettings(e) {
@@ -847,9 +893,119 @@ const Admin = {
       currency: document.getElementById('setting-currency').value,
       taxRate: parseFloat(document.getElementById('setting-tax-rate').value),
       autoConfirmBookings: document.getElementById('setting-auto-confirm').checked,
-      emailNotifications: document.getElementById('setting-email-notif').checked
+      emailNotifications: document.getElementById('setting-email-notif').checked,
+      stripeEnabled: true,
+      paypalEnabled: true
     };
     Storage.saveSettings(updated);
     UI.showToast('Platform settings saved successfully!', 'success', 'Saved');
+  },
+
+  renderPromosTable() {
+    const tbody = document.getElementById('admin-promos-tbody');
+    if (!tbody) return;
+
+    const promos = Storage.getPromos();
+    if (promos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="padding: 1.5rem; color: var(--text-muted);">No promo discount codes defined.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = promos.map(p => `
+      <tr>
+        <td><strong class="text-primary font-mono">${p.code}</strong></td>
+        <td>${p.discountType === 'percent' ? `${p.discountValue}% Off` : `${Storage.formatPrice(p.discountValue)} Fixed`}</td>
+        <td>${p.description || '-'}</td>
+        <td>${p.minPurchase ? Storage.formatPrice(p.minPurchase) : 'None'}</td>
+        <td><span class="badge ${p.active ? 'badge-success' : 'badge-danger'}">${p.active ? 'Active' : 'Disabled'}</span></td>
+        <td>
+          <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deletePromoAction('${p.code}')" title="Delete Promo"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  },
+
+  openAddPromoModal() {
+    let modal = document.getElementById('promo-form-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'promo-form-modal';
+      modal.className = 'modal-overlay';
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div class="modal-container modal-md">
+        <div class="modal-header">
+          <h3 class="modal-title">Create Promo Discount Code</h3>
+          <button class="modal-close" onclick="UI.closeModal('promo-form-modal')">&times;</button>
+        </div>
+        <form onsubmit="Admin.handleSavePromo(event)">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Coupon Code (Uppercase)</label>
+              <input type="text" class="form-control" id="promo-code-input" required placeholder="e.g. FLASH30" style="text-transform: uppercase;">
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Discount Type</label>
+                <select class="form-control" id="promo-type-select">
+                  <option value="percent">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount (PKR )</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Discount Value</label>
+                <input type="number" class="form-control" id="promo-val-input" min="1" max="1000" value="20" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Minimum Order Purchase (PKR )</label>
+              <input type="number" class="form-control" id="promo-min-input" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description / Campaign Name</label>
+              <input type="text" class="form-control" id="promo-desc-input" placeholder="e.g. 20% Special Weekend Sale">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="UI.closeModal('promo-form-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Promo Code</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    UI.openModal('promo-form-modal');
+  },
+
+  handleSavePromo(e) {
+    e.preventDefault();
+    const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
+    const type = document.getElementById('promo-type-select').value;
+    const val = parseFloat(document.getElementById('promo-val-input').value);
+    const min = parseFloat(document.getElementById('promo-min-input').value) || 0;
+    const desc = document.getElementById('promo-desc-input').value.trim();
+
+    Storage.savePromo({
+      code: code,
+      discountType: type,
+      discountValue: val,
+      minPurchase: min,
+      description: desc,
+      active: true
+    });
+
+    UI.closeModal('promo-form-modal');
+    UI.showToast(`Promo code ${code} created successfully!`, 'success', 'Promo Created');
+    this.renderPromosTable();
+  },
+
+  deletePromoAction(code) {
+    UI.confirm('Delete Promo Code', `Are you sure you want to delete promo code "${code}"?`, () => {
+      Storage.deletePromo(code);
+      UI.showToast(`Promo code ${code} deleted.`, 'info');
+      Admin.renderPromosTable();
+    });
   }
 };

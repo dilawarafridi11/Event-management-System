@@ -121,7 +121,7 @@ const Auth = {
 
   // Populate DOM user badges and profile snippets
   populateDomUser(user) {
-    document.addEventListener('DOMContentLoaded', () => {
+    const populate = () => {
       const nameElements = document.querySelectorAll('.user-name-display');
       const emailElements = document.querySelectorAll('.user-email-display');
       const avatarElements = document.querySelectorAll('.user-avatar-display');
@@ -136,6 +136,13 @@ const Auth = {
           el.innerHTML = `<img src="${user.avatar}" alt="${user.name}" style="width:100%;height:100%;object-fit:cover;">`;
         }
       });
-    });
+    };
+
+    // If DOM is already loaded, run immediately; otherwise wait
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', populate);
+    } else {
+      populate();
+    }
   }
 };

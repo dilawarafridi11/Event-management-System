@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <a href="dashboard.html" class="brand-logo">
-          <div class="brand-icon">🎟️</div>
+          <img src="../images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
           <span class="brand-text">Eventify</span>
         </a>
         <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">
@@ -28,33 +29,37 @@
       <div class="sidebar-nav-container">
         <div class="nav-section-title">Main Menu</div>
         <a href="dashboard.html" class="nav-item active">
-          <span class="nav-icon">📊</span>
+          <span class="nav-icon"><i class="fa-solid fa-chart-simple"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="events.html" class="nav-item">
-          <span class="nav-icon">🎟️</span>
+          <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
           <span class="nav-text">Events</span>
         </a>
         <a href="users.html" class="nav-item">
-          <span class="nav-icon">👥</span>
+          <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
           <span class="nav-text">Users</span>
         </a>
         <a href="bookings.html" class="nav-item">
-          <span class="nav-icon">📑</span>
+          <span class="nav-icon"><i class="fa-solid fa-file-invoice"></i></span>
           <span class="nav-text">Bookings</span>
         </a>
         <a href="venues.html" class="nav-item">
-          <span class="nav-icon">🏛️</span>
+          <span class="nav-icon"><i class="fa-solid fa-building-columns"></i></span>
           <span class="nav-text">Venues</span>
+        </a>
+        <a href="scanner.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-camera"></i></span>
+          <span class="nav-text">Gate Scanner</span>
         </a>
 
         <div class="nav-section-title">Analytics & Config</div>
         <a href="reports.html" class="nav-item">
-          <span class="nav-icon">📈</span>
+          <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
           <span class="nav-text">Reports</span>
         </a>
         <a href="settings.html" class="nav-item">
-          <span class="nav-icon">⚙️</span>
+          <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
           <span class="nav-text">Settings</span>
         </a>
       </div>
@@ -69,7 +74,7 @@
         </a>
         <div style="margin-top: 0.5rem;">
           <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
-            <span>🚪</span>
+            <span><i class="fa-solid fa-door-open"></i></span>
             <span class="logout-btn-text">Sign Out</span>
           </button>
         </div>
@@ -81,9 +86,9 @@
       <!-- Top Header -->
       <header class="top-header">
         <div class="header-left">
-          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <button class="mobile-menu-btn" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
           <div class="header-title-group">
-            <h1>Welcome back, Admin 👋</h1>
+            <h1>Welcome back, Admin <i class="fa-solid fa-hand-wave"></i></h1>
             <p>Here's what's happening with your events and ticketing today.</p>
           </div>
         </div>
@@ -91,14 +96,14 @@
         <div class="header-right">
           <!-- Global Search -->
           <div class="header-search">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
             <input type="text" placeholder="Search events, bookings..." aria-label="Search">
           </div>
 
           <!-- Notification Dropdown -->
           <div class="dropdown-wrapper">
             <button class="btn-icon" data-toggle="dropdown" title="Notifications" aria-label="Notifications">
-              <span>🔔</span>
+              <span><i class="fa-solid fa-bell"></i></span>
               <span class="notification-badge">3</span>
             </button>
             <div class="dropdown-menu notification-dropdown">
@@ -127,10 +132,10 @@
                 <div class="font-bold text-sm user-name-display">Alexander Wright</div>
                 <div class="text-xs text-muted user-email-display">admin@eventify.com</div>
               </div>
-              <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
-              <a href="../user/dashboard.html" class="dropdown-item">👤 Switch to User View</a>
+              <a href="settings.html" class="dropdown-item"><i class="fa-solid fa-gear"></i> Settings</a>
+              <a href="../user/dashboard.html" class="dropdown-item"><i class="fa-solid fa-user"></i> Switch to User View</a>
               <div class="dropdown-divider"></div>
-              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+              <div class="dropdown-item text-danger" data-action="logout"><i class="fa-solid fa-door-open"></i> Sign Out</div>
             </div>
           </div>
         </div>
@@ -146,13 +151,13 @@
           </div>
           <div class="flex gap-2 flex-wrap">
             <button class="btn btn-secondary btn-sm" onclick="Admin.triggerShimmerDemo()">
-              ✨ Preview Shimmer Effect
+              <i class="fa-solid fa-sparkles"></i> Preview Shimmer Effect
             </button>
             <button class="btn btn-secondary btn-sm" onclick="Storage.resetToDefaults(); UI.showToast('Dummy data restored!', 'info'); location.reload();">
-              🔄 Reset Demo Data
+              <i class="fa-solid fa-rotate"></i> Reset Demo Data
             </button>
             <button class="btn btn-primary btn-sm" onclick="Admin.openCreateEventModal()">
-              ➕ Create New Event
+              <i class="fa-solid fa-plus"></i> Create New Event
             </button>
           </div>
         </div>
@@ -160,7 +165,7 @@
         <!-- 5 Statistics Cards -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎟️</div>
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);"><i class="fa-solid fa-ticket"></i></div>
             <div class="stat-info">
               <div class="stat-label">Total Events</div>
               <div class="stat-value" id="stat-total-events">0</div>
@@ -172,7 +177,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">📅</div>
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);"><i class="fa-solid fa-calendar-days"></i></div>
             <div class="stat-info">
               <div class="stat-label">Upcoming Events</div>
               <div class="stat-value" id="stat-upcoming-events">0</div>
@@ -184,7 +189,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--info);">👥</div>
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--info);"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
               <div class="stat-label">Total Users</div>
               <div class="stat-value" id="stat-total-users">0</div>
@@ -196,7 +201,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">📑</div>
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);"><i class="fa-solid fa-file-invoice"></i></div>
             <div class="stat-info">
               <div class="stat-label">Total Bookings</div>
               <div class="stat-value" id="stat-total-bookings">0</div>
@@ -208,10 +213,10 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);">💰</div>
+            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);"><i class="fa-solid fa-sack-dollar"></i></div>
             <div class="stat-info">
               <div class="stat-label">Total Revenue</div>
-              <div class="stat-value" id="stat-total-revenue">$0</div>
+              <div class="stat-value" id="stat-total-revenue">PKR 0</div>
               <div class="stat-trend trend-up">
                 <span>↑ 32%</span>
                 <span class="text-muted text-xs">growth rate</span>

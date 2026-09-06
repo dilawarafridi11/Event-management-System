@@ -54,7 +54,7 @@ const NotificationManager = {
     listEl.innerHTML = notifs.map(n => `
       <div class="notification-item ${!n.read ? 'unread' : ''}" onclick="NotificationManager.handleItemClick('${n.id}')">
         <div class="notification-icon" style="background: ${n.type === 'success' ? 'var(--success-bg)' : (n.type === 'warning' ? 'var(--warning-bg)' : 'var(--accent-gradient-subtle)')};">
-          ${n.icon || '🔔'}
+          ${n.icon || '<i class="fa-solid fa-bell"></i>'}
         </div>
         <div class="notification-content">
           <div class="notification-title">${n.title}</div>

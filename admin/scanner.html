@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gate Check-In & QR Scanner - Eventify Admin</title>
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <img src="../images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
+          <span class="brand-text">Eventify</span>
+        </a>
+        <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <div class="nav-section-title">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-chart-simple"></i></span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="events.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+          <span class="nav-text">Events</span>
+        </a>
+        <a href="users.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+          <span class="nav-text">Users</span>
+        </a>
+        <a href="bookings.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-file-invoice"></i></span>
+          <span class="nav-text">Bookings</span>
+        </a>
+        <a href="venues.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-building-columns"></i></span>
+          <span class="nav-text">Venues</span>
+        </a>
+        <a href="scanner.html" class="nav-item active">
+          <span class="nav-icon"><i class="fa-solid fa-camera"></i></span>
+          <span class="nav-text">Gate Scanner</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Config</div>
+        <a href="reports.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+          <span class="nav-text">Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="settings.html" class="user-snippet">
+          <div class="avatar user-avatar-display">A</div>
+          <div class="user-snippet-info">
+            <div class="user-snippet-name user-name-display">Alexander Wright</div>
+            <div class="user-snippet-role">Administrator</div>
+          </div>
+        </a>
+        <div style="margin-top: 0.5rem;">
+          <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
+            <span><i class="fa-solid fa-door-open"></i></span>
+            <span class="logout-btn-text">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+          <div class="header-title-group">
+            <h1>Live Gate QR Scanner & Attendee Check-In</h1>
+            <p>Verify digital QR admission passes, prevent duplicate check-ins, and monitor real-time event attendance.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-toggle-icon"></span>
+          </button>
+          <div class="dropdown-wrapper">
+            <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">A</button>
+            <div class="dropdown-menu">
+              <a href="settings.html" class="dropdown-item"><i class="fa-solid fa-gear"></i> Settings</a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item text-danger" data-action="logout"><i class="fa-solid fa-door-open"></i> Sign Out</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body fade-in">
+        <!-- Live Scanner Stats Counters -->
+        <div class="stats-grid" style="margin-bottom: 2rem;">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Confirmed Passes</div>
+              <div class="stat-value" id="scanner-stat-total">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);"><i class="fa-solid fa-check-circle"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Checked-In Attendees</div>
+              <div class="stat-value text-success" id="scanner-stat-checked">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Pending Arrivals</div>
+              <div class="stat-value" id="scanner-stat-pending">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1.1fr 1fr; gap: 1.5rem; align-items: start;">
+          <!-- Left Column: Live Camera / Manual Search Box -->
+          <div class="card" style="padding: 1.5rem;">
+            <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
+              <h3 class="card-title text-base font-bold"><i class="fa-solid fa-camera"></i> Optical Gate Camera</h3>
+              <button class="btn btn-outline btn-sm" id="toggle-camera-btn" onclick="ScannerApp.toggleCamera()">
+                Start Camera Feed
+              </button>
+            </div>
+
+            <!-- Viewport Container -->
+            <div class="scanner-viewport-box">
+              <video id="scanner-video-feed" class="scanner-video" playsinline autoplay muted style="display: none;"></video>
+              <div id="camera-placeholder" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-camera"></i></div>
+                <div class="font-bold text-sm">Camera Feed Inactive</div>
+                <p class="text-xs text-secondary" style="margin-top: 0.25rem;">Click "Start Camera Feed" to scan attendee QR codes live with your webcam.</p>
+              </div>
+              <div class="scanner-target-frame" id="scanner-target-frame" style="display: none;">
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="width:20px; height:20px; border-top:3px solid #10b981; border-left:3px solid #10b981;"></span>
+                  <span style="width:20px; height:20px; border-top:3px solid #10b981; border-right:3px solid #10b981;"></span>
+                </div>
+                <div class="scanner-laser"></div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="width:20px; height:20px; border-bottom:3px solid #10b981; border-left:3px solid #10b981;"></span>
+                  <span style="width:20px; height:20px; border-bottom:3px solid #10b981; border-right:3px solid #10b981;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual Search / USB Barcode Scanner Input -->
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label class="form-label font-bold text-xs uppercase" for="scanner-manual-input">
+                <i class="fa-solid fa-keyboard"></i> Manual Ticket ID / Barcode Search
+              </label>
+              <form onsubmit="ScannerApp.handleManualSubmit(event)" style="display: flex; gap: 0.5rem;">
+                <input type="text" id="scanner-manual-input" class="form-control font-mono" placeholder="Enter BKG-8801 or scan barcode..." required autofocus style="text-transform: uppercase;">
+                <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Verify Pass</button>
+              </form>
+              <div class="flex gap-2 flex-wrap" style="margin-top: 0.75rem;">
+                <span class="text-xs text-muted">Demo Passes:</span>
+                <button class="badge badge-info" style="cursor: pointer; border: none;" onclick="ScannerApp.quickCheckIn('BKG-8801')">BKG-8801</button>
+                <button class="badge badge-info" style="cursor: pointer; border: none;" onclick="ScannerApp.quickCheckIn('BKG-8802')">BKG-8802</button>
+                <button class="badge badge-info" style="cursor: pointer; border: none;" onclick="ScannerApp.quickCheckIn('BKG-8803')">BKG-8803 (Used)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Verification Result Card & Recent Check-Ins -->
+          <div>
+            <!-- Live Result Status Card -->
+            <div class="card" id="scanner-result-card" style="margin-bottom: 1.5rem; padding: 1.5rem; min-height: 220px; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+              <div id="scanner-idle-state">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-bullseye"></i></div>
+                <h3 class="font-bold text-lg" style="margin-bottom: 0.25rem;">Ready to Scan</h3>
+                <p class="text-secondary text-xs">Scan attendee QR code or enter ticket ID to verify admission validity.</p>
+              </div>
+              <div id="scanner-active-result" style="display: none;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Recent Check-Ins Table Card -->
+            <div class="card" style="padding: 1.25rem;">
+              <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
+                <h4 class="font-bold text-sm"><i class="fa-solid fa-clipboard"></i> Today's Gate Check-In Activity</h4>
+                <span class="badge badge-confirmed" id="activity-badge">0 Checked-In</span>
+              </div>
+              <div style="max-height: 250px; overflow-y: auto;">
+                <table class="data-table" style="font-size: 0.8125rem;">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Attendee</th>
+                      <th>Ticket ID</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scanner-history-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    const ScannerApp = {
+      videoStream: null,
+      isCameraActive: false,
+
+      init() {
+        Auth.requireAuth('Admin');
+        this.updateStats();
+        this.renderHistory();
+      },
+
+      updateStats() {
+        const bookings = Storage.getBookings().filter(b => b.bookingStatus !== 'Cancelled');
+        const checked = bookings.filter(b => b.checkInStatus === 'Checked-In');
+        const pending = bookings.filter(b => b.checkInStatus !== 'Checked-In');
+
+        document.getElementById('scanner-stat-total').textContent = bookings.length;
+        document.getElementById('scanner-stat-checked').textContent = checked.length;
+        document.getElementById('scanner-stat-pending').textContent = pending.length;
+        document.getElementById('activity-badge').textContent = `${checked.length} Checked-In`;
+      },
+
+      renderHistory() {
+        const tbody = document.getElementById('scanner-history-tbody');
+        if (!tbody) return;
+
+        const bookings = Storage.getBookings()
+          .filter(b => b.checkInStatus === 'Checked-In')
+          .sort((a, b) => (b.checkedInAt || '').localeCompare(a.checkedInAt || ''));
+
+        if (bookings.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted" style="padding: 1.5rem;">No check-ins recorded yet today.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = bookings.map(b => `
+          <tr>
+            <td class="font-mono text-xs">${b.checkedInAt ? b.checkedInAt.split(' ')[1] || b.checkedInAt : 'Just now'}</td>
+            <td><strong>${UI.escapeHtml(b.userName)}</strong></td>
+            <td><span class="text-xs font-mono text-primary">${b.id}</span></td>
+            <td><span class="badge badge-success"><i class="fa-solid fa-check"></i> Verified</span></td>
+          </tr>
+        `).join('');
+      },
+
+      async toggleCamera() {
+        const video = document.getElementById('scanner-video-feed');
+        const placeholder = document.getElementById('camera-placeholder');
+        const targetFrame = document.getElementById('scanner-target-frame');
+        const btn = document.getElementById('toggle-camera-btn');
+
+        if (this.isCameraActive) {
+          if (this.videoStream) {
+            this.videoStream.getTracks().forEach(t => t.stop());
+            this.videoStream = null;
+          }
+          this.isCameraActive = false;
+          video.style.display = 'none';
+          placeholder.style.display = 'block';
+          targetFrame.style.display = 'none';
+          btn.textContent = 'Start Camera Feed';
+          btn.className = 'btn btn-outline btn-sm';
+        } else {
+          try {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+              this.videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+              video.srcObject = this.videoStream;
+              video.style.display = 'block';
+              placeholder.style.display = 'none';
+              targetFrame.style.display = 'flex';
+              this.isCameraActive = true;
+              btn.textContent = 'Stop Camera';
+              btn.className = 'btn btn-danger btn-sm';
+              UI.showToast('Camera feed connected. Point at attendee QR pass.', 'info', 'Scanner Active');
+            } else {
+              UI.showToast('Camera access is not supported by your browser.', 'warning');
+            }
+          } catch (err) {
+            UI.showToast('Camera access denied or no camera device found. You can use manual ticket search below.', 'warning', 'Camera Offline');
+          }
+        }
+      },
+
+      quickCheckIn(code) {
+        document.getElementById('scanner-manual-input').value = code;
+        this.processCode(code);
+      },
+
+      handleManualSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById('scanner-manual-input');
+        const code = input ? input.value.trim() : '';
+        if (code) {
+          this.processCode(code);
+          input.value = '';
+        }
+      },
+
+      processCode(code) {
+        const result = Storage.checkInTicket(code);
+        const resultCard = document.getElementById('scanner-result-card');
+        const idleState = document.getElementById('scanner-idle-state');
+        const activeResult = document.getElementById('scanner-active-result');
+
+        idleState.style.display = 'none';
+        activeResult.style.display = 'block';
+
+        if (result.success) {
+          // VALID
+          UI.playBeep('success');
+          resultCard.style.borderColor = 'var(--success)';
+          resultCard.style.background = 'rgba(16, 185, 129, 0.08)';
+
+          activeResult.innerHTML = `
+            <div style="font-size: 2.5rem; margin-bottom: 0.25rem;"><i class="fa-solid fa-check-circle"></i></div>
+            <div class="badge badge-success font-bold text-sm" style="margin-bottom: 0.75rem; padding: 0.35rem 1rem;">
+              VALID PASS — ADMISSION APPROVED
+            </div>
+            <h3 class="font-bold text-xl text-primary" style="margin-bottom: 0.25rem;">${UI.escapeHtml(result.booking.userName)}</h3>
+            <p class="text-xs text-secondary" style="margin-bottom: 0.75rem;">${UI.escapeHtml(result.booking.eventTitle)}</p>
+            <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.75rem; margin-top: 0.5rem;">
+              <div><strong>Pass ID:</strong> ${result.booking.id}</div>
+              <div><strong>Tier:</strong> ${result.booking.tierName || 'Standard'}</div>
+              <div><strong>Admit:</strong> ${result.booking.tickets} Person(s)</div>
+            </div>
+          `;
+          UI.showToast(`Pass verified for ${result.booking.userName}!`, 'success', 'Admission Approved');
+        } else if (result.status === 'ALREADY_CHECKED_IN') {
+          // ALREADY CHECKED IN
+          UI.playBeep('warning');
+          resultCard.style.borderColor = 'var(--warning)';
+          resultCard.style.background = 'rgba(245, 158, 11, 0.08)';
+
+          activeResult.innerHTML = `
+            <div style="font-size: 2.5rem; margin-bottom: 0.25rem;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="badge badge-warning font-bold text-sm" style="margin-bottom: 0.75rem; padding: 0.35rem 1rem;">
+              ALREADY USED PASS — DUPLICATE SCAN
+            </div>
+            <h3 class="font-bold text-lg text-primary" style="margin-bottom: 0.25rem;">${UI.escapeHtml(result.booking.userName)}</h3>
+            <p class="text-xs text-secondary" style="margin-bottom: 0.5rem;">Pass ID: ${result.booking.id}</p>
+            <p class="text-xs text-danger font-bold">Checked in previously at: ${result.booking.checkedInAt || 'Gate'}</p>
+          `;
+          UI.showToast('Duplicate scan! This ticket was already checked in.', 'warning', 'Duplicate Pass');
+        } else {
+          // NOT FOUND OR CANCELLED
+          UI.playBeep('error');
+          resultCard.style.borderColor = 'var(--danger)';
+          resultCard.style.background = 'rgba(239, 68, 68, 0.08)';
+
+          activeResult.innerHTML = `
+            <div style="font-size: 2.5rem; margin-bottom: 0.25rem;"><i class="fa-solid fa-xmark"></i></div>
+            <div class="badge badge-danger font-bold text-sm" style="margin-bottom: 0.75rem; padding: 0.35rem 1rem;">
+              ADMISSION DENIED — INVALID PASS
+            </div>
+            <h3 class="font-bold text-base text-danger" style="margin-bottom: 0.5rem;">${result.message}</h3>
+            <p class="text-xs text-muted">Ticket Code: <code>${UI.escapeHtml(code)}</code></p>
+          `;
+          UI.showToast(result.message, 'error', 'Admission Denied');
+        }
+
+        this.updateStats();
+        this.renderHistory();
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ScannerApp.init();
+    });
+  </script>
+</body>
+</html>

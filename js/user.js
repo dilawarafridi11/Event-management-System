@@ -67,7 +67,7 @@ const User = {
     if (bookings.length === 0) {
       container.innerHTML = `
         <div class="empty-state card" style="padding: 2.5rem 1.5rem;">
-          <div class="empty-state-icon">🎟️</div>
+          <div class="empty-state-icon"><i class="fa-solid fa-ticket"></i></div>
           <h4 class="empty-state-title">No upcoming booked events</h4>
           <p class="empty-state-desc">Explore amazing conferences, music festivals, and workshops happening near you.</p>
           <a href="events.html" class="btn btn-primary">Discover Events</a>
@@ -85,11 +85,11 @@ const User = {
         <div style="flex: 1; min-width: 200px;">
           <div class="badge badge-confirmed" style="margin-bottom: 0.35rem;">Confirmed • ${b.tickets} Ticket(s)</div>
           <h4 class="font-bold text-base" style="margin-bottom: 0.25rem;">${b.eventTitle}</h4>
-          <div class="text-xs text-secondary">📍 ${b.venue} • ⏰ ${b.eventTime}</div>
+          <div class="text-xs text-secondary"><i class="fa-solid fa-location-dot"></i> ${b.venue} • <i class="fa-solid fa-clock"></i> ${b.eventTime}</div>
         </div>
         <div class="flex gap-2">
           <button class="btn btn-primary btn-sm" onclick="BookingsManager.showDigitalTicket('${b.id}')">
-            🎟️ View Pass
+            <i class="fa-solid fa-ticket"></i> View Pass
           </button>
         </div>
       </div>
@@ -100,14 +100,52 @@ const User = {
   initEventsPage() {
     Auth.requireAuth('User');
     this.selectedCategory = 'All';
+    this.currentView = 'grid'; // 'grid', 'list', 'calendar'
+    this.calendarDate = new Date();
+
+    // Parse URL query params (?cat=... & ?q=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const catParam = urlParams.get('cat');
+    const qParam = urlParams.get('q');
+
+    if (catParam) {
+      this.selectedCategory = catParam;
+    }
 
     const grid = document.getElementById('discover-events-grid');
     if (grid) UI.showSkeleton(grid, 'events', 6);
 
     setTimeout(() => {
+      // Sync URL parameters with UI inputs
+      if (qParam) {
+        const searchInput = document.getElementById('discover-search');
+        if (searchInput) searchInput.value = qParam;
+      }
+
+      if (catParam) {
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+          if (chip.getAttribute('data-category') === catParam) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+          }
+        });
+      }
+
       this.renderDiscoverEvents();
       this.bindDiscoverFilters();
+      this.bindViewSwitchers();
     }, 400);
+  },
+
+  bindViewSwitchers() {
+    document.querySelectorAll('.view-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.currentView = btn.getAttribute('data-view') || 'grid';
+        this.renderDiscoverEvents();
+      });
+    });
   },
 
   bindDiscoverFilters() {
@@ -137,16 +175,16 @@ const User = {
     if (sortSelect) sortSelect.addEventListener('change', triggerDiscover);
     if (priceSlider) {
       priceSlider.addEventListener('input', (e) => {
-        if (priceDisplay) priceDisplay.textContent = `$${e.target.value}`;
+        if (priceDisplay) priceDisplay.textContent = Storage.formatPrice(e.target.value);
         this.renderDiscoverEvents();
       });
     }
   },
 
   renderDiscoverEvents() {
-    const grid = document.getElementById('discover-events-grid');
-    if (!grid) return;
-    grid.classList.remove('is-loading');
+    const gridContainer = document.getElementById('discover-events-grid');
+    if (!gridContainer) return;
+    gridContainer.classList.remove('is-loading');
 
     let events = Storage.getEvents();
     const search = (document.getElementById('discover-search')?.value || '').toLowerCase();
@@ -159,7 +197,7 @@ const User = {
       const matchSearch = e.title.toLowerCase().includes(search) || 
                           e.description.toLowerCase().includes(search) || 
                           e.venue.toLowerCase().includes(search);
-      const matchPrice = e.ticketPrice <= maxPrice;
+      const matchPrice = (e.ticketPrice || 0) <= maxPrice;
       return matchCat && matchSearch && matchPrice;
     });
 
@@ -170,9 +208,10 @@ const User = {
     else if (sort === 'price-high') events.sort((a, b) => b.ticketPrice - a.ticketPrice);
 
     if (events.length === 0) {
-      grid.innerHTML = `
+      gridContainer.className = 'grid';
+      gridContainer.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
-          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
           <h3 class="empty-state-title">No events found matching your criteria</h3>
           <p class="empty-state-desc">Try resetting your category filters or adjusting the price range.</p>
         </div>
@@ -180,7 +219,125 @@ const User = {
       return;
     }
 
-    grid.innerHTML = events.map(e => EventsManager.renderEventCard(e, true)).join('');
+    if (this.currentView === 'grid') {
+      gridContainer.className = 'grid';
+      gridContainer.style.display = 'grid';
+      gridContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+      gridContainer.innerHTML = events.map(e => EventsManager.renderEventCard(e, true)).join('');
+    } else if (this.currentView === 'list') {
+      gridContainer.className = 'events-list-container';
+      gridContainer.style.display = 'flex';
+      gridContainer.style.flexDirection = 'column';
+      gridContainer.innerHTML = events.map(e => EventsManager.renderEventListItem(e, true)).join('');
+    } else if (this.currentView === 'calendar') {
+      gridContainer.className = 'calendar-wrapper';
+      gridContainer.style.display = 'block';
+      this.renderCalendarView(gridContainer, events);
+    }
+  },
+
+  renderCalendarView(container, events) {
+    const year = this.calendarDate.getFullYear();
+    const month = this.calendarDate.getMonth();
+    const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    // First day of month & days in month
+    const firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Build day cells
+    let cellsHtml = '';
+
+    // Prev month padding
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const d = daysInPrevMonth - i;
+      cellsHtml += `
+        <div class="calendar-day-cell other-month">
+          <div class="calendar-day-header"><span class="calendar-day-num">${d}</span></div>
+        </div>
+      `;
+    }
+
+    // Current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const isToday = dateStr === todayStr;
+      const dayEvents = events.filter(e => e.date === dateStr);
+
+      cellsHtml += `
+        <div class="calendar-day-cell ${isToday ? 'today' : ''}" onclick="User.handleCalendarDayClick('${dateStr}')">
+          <div class="calendar-day-header">
+            <span class="calendar-day-num">${day}</span>
+            ${dayEvents.length > 0 ? `<span class="text-xs font-bold text-primary">${dayEvents.length}</span>` : ''}
+          </div>
+          <div style="overflow-y: auto; max-height: 70px;">
+            ${dayEvents.map(e => `
+              <span class="calendar-event-pill ${e.category}" title="${UI.escapeHtml(e.title)} • ${e.startTime}" onclick="event.stopPropagation(); EventsManager.viewEventDetails('${e.id}')">
+                ${UI.escapeHtml(e.title)}
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Remaining slots to fill 35 or 42 grid
+    const totalRendered = firstDay + daysInMonth;
+    const remaining = totalRendered > 35 ? 42 - totalRendered : 35 - totalRendered;
+    for (let j = 1; j <= remaining; j++) {
+      cellsHtml += `
+        <div class="calendar-day-cell other-month">
+          <div class="calendar-day-header"><span class="calendar-day-num">${j}</span></div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="calendar-header">
+        <div>
+          <div class="text-xs text-muted font-bold uppercase">Monthly Schedule</div>
+          <h3 class="calendar-month-title">${monthName}</h3>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn btn-secondary btn-sm" onclick="User.changeCalendarMonth(-1)">‹ Prev Month</button>
+          <button class="btn btn-outline btn-sm" onclick="User.calendarDate = new Date(); User.renderDiscoverEvents();">Today</button>
+          <button class="btn btn-secondary btn-sm" onclick="User.changeCalendarMonth(1)">Next Month ›</button>
+        </div>
+      </div>
+
+      <div class="calendar-weekdays-grid">
+        <div class="calendar-weekday-label">Sun</div>
+        <div class="calendar-weekday-label">Mon</div>
+        <div class="calendar-weekday-label">Tue</div>
+        <div class="calendar-weekday-label">Wed</div>
+        <div class="calendar-weekday-label">Thu</div>
+        <div class="calendar-weekday-label">Fri</div>
+        <div class="calendar-weekday-label">Sat</div>
+      </div>
+
+      <div class="calendar-grid">
+        ${cellsHtml}
+      </div>
+    `;
+  },
+
+  changeCalendarMonth(delta) {
+    this.calendarDate.setMonth(this.calendarDate.getMonth() + delta);
+    this.renderDiscoverEvents();
+  },
+
+  handleCalendarDayClick(dateStr) {
+    const events = Storage.getEvents().filter(e => e.date === dateStr);
+    if (events.length === 1) {
+      EventsManager.viewEventDetails(events[0].id);
+    } else if (events.length > 1) {
+      UI.showToast(`${events.length} events scheduled for ${dateStr}. Click on individual pills to view.`, 'info');
+    } else {
+      UI.showToast(`No events scheduled for ${dateStr}.`, 'info');
+    }
   },
 
   // 3. User My Bookings Page
@@ -219,7 +376,7 @@ const User = {
     if (bookings.length === 0) {
       container.innerHTML = `
         <div class="empty-state card">
-          <div class="empty-state-icon">🎟️</div>
+          <div class="empty-state-icon"><i class="fa-solid fa-ticket"></i></div>
           <h3 class="empty-state-title">No bookings found</h3>
           <p class="empty-state-desc">You haven't booked any tickets in this category yet.</p>
           <a href="events.html" class="btn btn-primary">Browse Events</a>
@@ -240,26 +397,26 @@ const User = {
           </div>
           <div class="text-right">
             <div class="text-xs text-muted uppercase font-semibold">Total Paid</div>
-            <div class="font-bold text-xl text-primary">$${b.totalAmount}</div>
+            <div class="font-bold text-xl text-primary">PKR ${b.totalAmount}</div>
           </div>
         </div>
 
         <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
           <div>
             <div class="text-xs text-muted font-semibold uppercase">Event Date</div>
-            <div class="font-semibold text-sm">📅 ${b.eventDate}</div>
+            <div class="font-semibold text-sm"><i class="fa-solid fa-calendar-days"></i> ${b.eventDate}</div>
           </div>
           <div>
             <div class="text-xs text-muted font-semibold uppercase">Time</div>
-            <div class="font-semibold text-sm">⏰ ${b.eventTime}</div>
+            <div class="font-semibold text-sm"><i class="fa-solid fa-clock"></i> ${b.eventTime}</div>
           </div>
           <div>
             <div class="text-xs text-muted font-semibold uppercase">Venue</div>
-            <div class="font-semibold text-sm">📍 ${b.venue}</div>
+            <div class="font-semibold text-sm"><i class="fa-solid fa-location-dot"></i> ${b.venue}</div>
           </div>
           <div>
             <div class="text-xs text-muted font-semibold uppercase">Quantity</div>
-            <div class="font-semibold text-sm">🎟️ ${b.tickets} Ticket(s)</div>
+            <div class="font-semibold text-sm"><i class="fa-solid fa-ticket"></i> ${b.tickets} Ticket(s)</div>
           </div>
         </div>
 
@@ -267,7 +424,7 @@ const User = {
           <span class="text-xs text-muted">Booked on ${b.bookingDate}</span>
           <div class="flex gap-2">
             <button class="btn btn-primary btn-sm" onclick="BookingsManager.showDigitalTicket('${b.id}')">
-              🎟️ View Digital Pass
+              <i class="fa-solid fa-ticket"></i> View Digital Pass
             </button>
             ${b.bookingStatus !== 'Cancelled' ? `
               <button class="btn btn-outline btn-sm text-danger" onclick="BookingsManager.cancelBooking('${b.id}')">
@@ -295,7 +452,7 @@ const User = {
       if (bookings.length === 0) {
         container.innerHTML = `
           <div class="empty-state card">
-            <div class="empty-state-icon">🎟️</div>
+            <div class="empty-state-icon"><i class="fa-solid fa-ticket"></i></div>
             <h3 class="empty-state-title">Your Ticket Wallet is Empty</h3>
             <p class="empty-state-desc">Book your seats for upcoming events and your digital QR admission passes will appear here.</p>
             <a href="events.html" class="btn btn-primary">Find Events to Attend</a>
@@ -344,7 +501,7 @@ const User = {
                 </div>
                 <div>
                   <div class="ticket-info-label">Admission Status</div>
-                  <div class="ticket-info-val text-success">✓ Verified Valid</div>
+                  <div class="ticket-info-val text-success"><i class="fa-solid fa-check"></i> Verified Valid</div>
                 </div>
               </div>
               <div class="ticket-qr-section">
@@ -356,8 +513,8 @@ const User = {
             </div>
           </div>
           <div class="flex justify-center gap-3" style="margin-top: 1rem;">
-            <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Print Pass</button>
-            <button class="btn btn-secondary btn-sm" onclick="UI.showToast('Downloaded ${b.id} digital pass image.', 'success')">⬇️ Download Pass</button>
+            <button class="btn btn-outline btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Pass</button>
+            <button class="btn btn-secondary btn-sm" onclick="BookingsManager.downloadTicketImage('${b.id}')">⬇ Download Pass (PNG)</button>
           </div>
         </div>
       `).join('');
@@ -386,7 +543,7 @@ const User = {
     if (favEvents.length === 0) {
       container.innerHTML = `
         <div class="empty-state card" style="grid-column: 1 / -1;">
-          <div class="empty-state-icon">❤️</div>
+          <div class="empty-state-icon"><i class="fa-solid fa-heart"></i></div>
           <h3 class="empty-state-title">No favorited events</h3>
           <p class="empty-state-desc">Click the heart icon on any event card to save it to your wishlist for fast access.</p>
           <a href="events.html" class="btn btn-primary">Discover Events</a>

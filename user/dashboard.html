@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <a href="dashboard.html" class="brand-logo">
-          <div class="brand-icon">🎟️</div>
+          <img src="../images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
           <span class="brand-text">Eventify</span>
         </a>
         <button class="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse">◀</button>
@@ -26,33 +27,33 @@
       <div class="sidebar-nav-container">
         <div class="nav-section-title">Attendee Portal</div>
         <a href="dashboard.html" class="nav-item active">
-          <span class="nav-icon">🏠</span>
+          <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="events.html" class="nav-item">
-          <span class="nav-icon">🔍</span>
+          <span class="nav-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
           <span class="nav-text">Discover Events</span>
         </a>
         <a href="bookings.html" class="nav-item">
-          <span class="nav-icon">📑</span>
+          <span class="nav-icon"><i class="fa-solid fa-file-invoice"></i></span>
           <span class="nav-text">My Bookings</span>
         </a>
         <a href="favorites.html" class="nav-item">
-          <span class="nav-icon">❤️</span>
+          <span class="nav-icon"><i class="fa-solid fa-heart"></i></span>
           <span class="nav-text">Favorites</span>
         </a>
         <a href="tickets.html" class="nav-item">
-          <span class="nav-icon">🎟️</span>
+          <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
           <span class="nav-text">Digital Passes</span>
         </a>
 
         <div class="nav-section-title">Account</div>
         <a href="profile.html" class="nav-item">
-          <span class="nav-icon">👤</span>
+          <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
           <span class="nav-text">My Profile</span>
         </a>
         <a href="settings.html" class="nav-item">
-          <span class="nav-icon">⚙️</span>
+          <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
           <span class="nav-text">Settings</span>
         </a>
       </div>
@@ -67,7 +68,7 @@
         </a>
         <div style="margin-top: 0.5rem;">
           <button class="btn btn-ghost btn-sm btn-full text-danger" data-action="logout" style="justify-content: flex-start;">
-            <span>🚪</span>
+            <span><i class="fa-solid fa-door-open"></i></span>
             <span class="logout-btn-text">Sign Out</span>
           </button>
         </div>
@@ -79,9 +80,9 @@
       <!-- Top Header -->
       <header class="top-header">
         <div class="header-left">
-          <button class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+          <button class="mobile-menu-btn" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
           <div class="header-title-group">
-            <h1>Welcome back, <span class="user-name-display">Sophia</span> 👋</h1>
+            <h1>Welcome back, <span class="user-name-display">Sophia</span> <i class="fa-solid fa-hand-wave"></i></h1>
             <p>Ready to discover and attend inspiring events near you?</p>
           </div>
         </div>
@@ -89,14 +90,14 @@
         <div class="header-right">
           <!-- Search -->
           <div class="header-search">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
             <input type="text" placeholder="Search experiences..." aria-label="Search">
           </div>
 
           <!-- Notification Dropdown -->
           <div class="dropdown-wrapper">
             <button class="btn-icon" data-toggle="dropdown" title="Notifications" aria-label="Notifications">
-              <span>🔔</span>
+              <span><i class="fa-solid fa-bell"></i></span>
               <span class="notification-badge">2</span>
             </button>
             <div class="dropdown-menu notification-dropdown">
@@ -119,11 +120,11 @@
           <div class="dropdown-wrapper">
             <button class="avatar user-avatar-display" data-toggle="dropdown" aria-label="Profile">U</button>
             <div class="dropdown-menu">
-              <a href="profile.html" class="dropdown-item">👤 Profile</a>
-              <a href="tickets.html" class="dropdown-item">🎟️ Digital Passes</a>
-              <a href="../admin/dashboard.html" class="dropdown-item">🛡️ Switch to Admin View</a>
+              <a href="profile.html" class="dropdown-item"><i class="fa-solid fa-user"></i> Profile</a>
+              <a href="tickets.html" class="dropdown-item"><i class="fa-solid fa-ticket"></i> Digital Passes</a>
+              <a href="../admin/dashboard.html" class="dropdown-item"><i class="fa-solid fa-shield"></i> Switch to Admin View</a>
               <div class="dropdown-divider"></div>
-              <div class="dropdown-item text-danger" data-action="logout">🚪 Sign Out</div>
+              <div class="dropdown-item text-danger" data-action="logout"><i class="fa-solid fa-door-open"></i> Sign Out</div>
             </div>
           </div>
         </div>
@@ -135,7 +136,7 @@
         <div class="card" style="background: var(--accent-gradient); color: #fff; padding: 2.5rem; margin-bottom: 2rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-glow);">
           <div style="max-width: 600px;">
             <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: #fff; border: none; margin-bottom: 1rem;">
-              ✨ EXPERIENCE MORE
+              <i class="fa-solid fa-sparkles"></i> EXPERIENCE MORE
             </span>
             <h2 style="font-size: 2rem; color: #fff; margin-bottom: 0.75rem; line-height: 1.2;">
               Discover Amazing Events Near You
@@ -151,7 +152,7 @@
                 View My Bookings
               </a>
               <button type="button" class="btn btn-outline" onclick="User.triggerShimmerDemo()" style="color: #fff; border-color: rgba(255, 255, 255, 0.6);">
-                ✨ Preview Shimmer
+                <i class="fa-solid fa-sparkles"></i> Preview Shimmer
               </button>
             </div>
           </div>
@@ -160,7 +161,7 @@
         <!-- 4 Attendee KPI Stats -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎟️</div>
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);"><i class="fa-solid fa-ticket"></i></div>
             <div class="stat-info">
               <div class="stat-label">Active Bookings</div>
               <div class="stat-value" id="user-stat-active-bookings">0</div>
@@ -169,7 +170,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">🎫</div>
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);"><i class="fa-solid fa-ticket"></i></div>
             <div class="stat-info">
               <div class="stat-label">Total Tickets</div>
               <div class="stat-value" id="user-stat-tickets">0</div>
@@ -178,7 +179,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);">❤️</div>
+            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);"><i class="fa-solid fa-heart"></i></div>
             <div class="stat-info">
               <div class="stat-label">Saved Favorites</div>
               <div class="stat-value" id="user-stat-favorites">0</div>
@@ -187,7 +188,7 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">⭐</div>
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);"><i class="fa-solid fa-star"></i></div>
             <div class="stat-info">
               <div class="stat-label">Reward Points</div>
               <div class="stat-value" id="user-stat-points">0</div>

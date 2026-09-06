@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body style="display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; padding: 2rem 1rem;">
 
@@ -23,7 +24,7 @@
     <!-- Brand Logo -->
     <div style="text-align: center; margin-bottom: 1.75rem;">
       <a href="index.html" class="brand-logo" style="justify-content: center; margin-bottom: 0.5rem;">
-        <div class="brand-icon">🎟️</div>
+        <img src="images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
         <span>Eventify</span>
       </a>
       <p class="text-secondary text-sm">Join thousands of event creators and attendees.</p>
@@ -50,7 +51,7 @@
         <div class="form-group">
           <label class="form-label" for="reg-email">Email Address <span class="required">*</span></label>
           <div class="input-icon-wrapper">
-            <span class="input-icon">✉️</span>
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
             <input type="email" id="reg-email" class="form-control" placeholder="jane@example.com" required>
           </div>
         </div>
@@ -112,6 +113,7 @@
 
   <script src="js/storage.js"></script>
   <script src="js/theme.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/ui.js"></script>
 
@@ -130,7 +132,7 @@
       if (password.length >= 6) score += 25;
       if (password.length >= 10) score += 25;
       if (/[A-Z]/.test(password)) score += 25;
-      if (/[0-9!@#$%^&*]/.test(password)) score += 25;
+      if (/[0-9!@#PKR %^&*]/.test(password)) score += 25;
 
       bar.style.width = score + '%';
 
@@ -149,7 +151,10 @@
       }
     }
 
-    function handleRegister(e) {
+    // Initialize seed data for offline fallback
+    Storage.init();
+
+    async function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value;
       const email = document.getElementById('reg-email').value;
@@ -166,31 +171,65 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="spin">↻</span> Creating Account...`;
+      submitBtn.innerHTML = `<span class="spin"><i class="fa-solid fa-rotate-right"></i></span> Creating Account...`;
 
-      setTimeout(() => {
-        const result = Auth.register({
-          name,
-          email,
-          phone,
-          location,
-          role,
-          password
-        });
+      try {
+        // Try backend API registration first
+        const apiResult = await API.register({ name, email, phone, location, role, password });
 
-        if (!result.success) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Create Free Account';
-          UI.showToast(result.message, 'error', 'Registration Failed');
+        if (apiResult && apiResult.success && apiResult.data && apiResult.data.user) {
+          const user = apiResult.data.user;
+          // Save session to localStorage for route guards
+          const sessionData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            phone: user.phone,
+            location: user.location,
+            loginTime: new Date().toISOString(),
+            token: apiResult.data.token
+          };
+
+          if (user.role === 'Admin') {
+            localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(sessionData));
+          } else {
+            localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(sessionData));
+          }
+
+          UI.showToast('Account created successfully! Redirecting...', 'success', 'Welcome');
+          setTimeout(() => {
+            window.location.href = user.role === 'Admin' ? 'admin/dashboard.html' : 'user/dashboard.html';
+          }, 600);
           return;
         }
 
-        UI.showToast('Account created successfully! Redirecting...', 'success', 'Welcome');
+        // If API returned an error (server reachable but registration failed)
+        if (apiResult && apiResult.success === false && apiResult.message) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Free Account';
+          UI.showToast(apiResult.message, 'error', 'Registration Failed');
+          return;
+        }
+      } catch (err) {
+        console.warn('[Register] API server unavailable, falling back to offline mode:', err);
+      }
 
-        setTimeout(() => {
-          window.location.href = 'user/dashboard.html';
-        }, 600);
-      }, 700);
+      // Fallback: client-side localStorage registration (offline / demo mode)
+      const result = Auth.register({ name, email, phone, location, role, password });
+
+      if (!result.success) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Free Account';
+        UI.showToast(result.message, 'error', 'Registration Failed');
+        return;
+      }
+
+      UI.showToast('Account created successfully! Redirecting...', 'success', 'Welcome');
+      setTimeout(() => {
+        window.location.href = 'user/dashboard.html';
+      }, 600);
     }
   </script>
 </body>

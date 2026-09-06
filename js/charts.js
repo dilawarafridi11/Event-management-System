@@ -242,7 +242,7 @@ const Charts = {
     let animProgress = 0;
 
     const colors = this.getThemeColors();
-    const prefix = options.prefix || '$';
+    const prefix = options.prefix || 'PKR ';
 
     const draw = () => {
       const { ctx, width, height } = this.setupCanvas(canvas);

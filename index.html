@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
   <nav class="navbar-public">
     <div class="container">
       <a href="index.html" class="brand-logo">
-        <div class="brand-icon">🎟️</div>
+        <img src="images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
         <span>Eventify</span>
       </a>
 
@@ -45,7 +46,7 @@
     <div class="hero-glow"></div>
     <div class="container">
       <div class="hero-badge">
-        <span>✨ The Next-Generation Event Platform</span>
+        <span><i class="fa-solid fa-sparkles"></i> The Next-Generation Event Platform</span>
       </div>
       <h1 class="hero-title">
         Discover, Book & Experience<br>
@@ -68,28 +69,28 @@
       <!-- Quick Platform Stats Counter -->
       <div class="stats-grid" id="stats" style="margin-top: 4rem; max-width: 1000px; margin-left: auto; margin-right: auto;">
         <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎟️</div>
+          <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);"><i class="fa-solid fa-ticket"></i></div>
           <div class="stat-info">
             <div class="stat-label">Total Events Hosted</div>
             <div class="stat-value" id="landing-stat-events">1,450+</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">👥</div>
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);"><i class="fa-solid fa-users"></i></div>
           <div class="stat-info">
             <div class="stat-label">Active Attendees</div>
             <div class="stat-value" id="landing-stat-attendees">85,200+</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);">🏛️</div>
+          <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: var(--pink);"><i class="fa-solid fa-building-columns"></i></div>
           <div class="stat-info">
             <div class="stat-label">Partner Venues</div>
             <div class="stat-value" id="landing-stat-venues">320+</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">⭐</div>
+          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);"><i class="fa-solid fa-star"></i></div>
           <div class="stat-info">
             <div class="stat-label">User Satisfaction</div>
             <div class="stat-value" id="landing-stat-rating">99.4%</div>
@@ -111,35 +112,35 @@
 
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1.25rem;">
       <a href="user/events.html?cat=Conference" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎤</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-microphone"></i></div>
         <div class="font-bold text-sm text-primary">Conferences</div>
       </a>
       <a href="user/events.html?cat=Concert" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎵</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-music"></i></div>
         <div class="font-bold text-sm text-primary">Concerts</div>
       </a>
       <a href="user/events.html?cat=Workshop" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💻</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-laptop"></i></div>
         <div class="font-bold text-sm text-primary">Workshops</div>
       </a>
       <a href="user/events.html?cat=Wedding" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💍</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-ring"></i></div>
         <div class="font-bold text-sm text-primary">Weddings</div>
       </a>
       <a href="user/events.html?cat=Seminar" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌱</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-seedling"></i></div>
         <div class="font-bold text-sm text-primary">Seminars</div>
       </a>
       <a href="user/events.html?cat=Sports" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-trophy"></i></div>
         <div class="font-bold text-sm text-primary">Sports</div>
       </a>
       <a href="user/events.html?cat=Exhibition" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎨</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-palette"></i></div>
         <div class="font-bold text-sm text-primary">Exhibitions</div>
       </a>
       <a href="user/events.html?cat=Party" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🍸</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-martini-glass"></i></div>
         <div class="font-bold text-sm text-primary">Parties</div>
       </a>
     </div>
@@ -171,37 +172,37 @@
 
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon-wrapper">🎟️</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-ticket"></i></div>
         <h3 class="feature-title">Digital QR Passes</h3>
         <p class="text-secondary text-sm">Instant digital admission passes with verification barcodes, printable formats, and offline Apple Wallet-style styling.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon-wrapper">📊</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-chart-simple"></i></div>
         <h3 class="feature-title">Real-Time Analytics</h3>
         <p class="text-secondary text-sm">Monitor revenue, ticket velocity, and occupancy rates with pure Canvas interactive graphs and financial export tools.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon-wrapper">🏛️</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-building-columns"></i></div>
         <h3 class="feature-title">Venue Coordination</h3>
         <p class="text-secondary text-sm">Manage halls, capacities, pricing tiers, and equipment requirements with full venue availability calendars.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon-wrapper">🌓</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-circle-half-stroke"></i></div>
         <h3 class="feature-title">Dark & Light Themes</h3>
         <p class="text-secondary text-sm">Crafted with high-contrast dark mode and crisp light mode themes that persist seamlessly across sessions.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon-wrapper">⚡</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-bolt"></i></div>
         <h3 class="feature-title">Instant Seat Reservations</h3>
         <p class="text-secondary text-sm">Automated seat capacity tracking prevents overselling and handles cancellations cleanly in real time.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon-wrapper">🛡️</div>
+        <div class="feature-icon-wrapper"><i class="fa-solid fa-shield"></i></div>
         <h3 class="feature-title">Dual Dashboards</h3>
         <p class="text-secondary text-sm">Dedicated administrative command center and intuitive attendee self-service ticketing dashboard.</p>
       </div>
@@ -232,7 +233,7 @@
       <div class="grid" style="grid-template-columns: 2fr repeat(3, 1fr); gap: 3rem;">
         <div>
           <div class="brand-logo" style="margin-bottom: 1rem;">
-            <div class="brand-icon">🎟️</div>
+            <img src="images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
             <span>Eventify</span>
           </div>
           <p class="text-secondary text-sm" style="max-width: 320px; line-height: 1.6;">

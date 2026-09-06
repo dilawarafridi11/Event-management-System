@@ -248,6 +248,76 @@ const UI = {
         renderCallback();
       }
     }, delay);
+  },
+
+  // HTML Entity Escaper for XSS Protection
+  escapeHtml(str) {
+    if (typeof str !== 'string') return str;
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
+  // Star Rating HTML Generator
+  renderStarRating(rating = 5, maxStars = 5) {
+    const num = Math.min(maxStars, Math.max(0, Number(rating) || 5));
+    const fullStars = Math.floor(num);
+    const hasHalf = (num - fullStars) >= 0.3;
+    let starsHtml = '';
+    
+    for (let i = 1; i <= maxStars; i++) {
+      if (i <= fullStars) {
+        starsHtml += `<span class="star filled" style="color: #f59e0b;">★</span>`;
+      } else if (i === fullStars + 1 && hasHalf) {
+        starsHtml += `<span class="star half" style="color: #f59e0b;">★</span>`;
+      } else {
+        starsHtml += `<span class="star empty" style="color: rgba(255,255,255,0.2);">★</span>`;
+      }
+    }
+    return `<span class="star-rating-display" title="${num.toFixed(1)} out of ${maxStars}">${starsHtml} <span class="rating-num text-xs font-bold" style="margin-left: 2px;">${num.toFixed(1)}</span></span>`;
+  },
+
+  // Audio Feedback for Scanner / Actions using Web Audio API
+  playBeep(type = 'success') {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'success') {
+        osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+        osc.frequency.setValueAtTime(1320, ctx.currentTime + 0.08); // E6
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } else if (type === 'warning') {
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.setValueAtTime(330, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+      } else {
+        // Error
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    } catch {
+      // Audio context might be restricted before interaction
+    }
   }
 };
 
