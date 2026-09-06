@@ -292,7 +292,7 @@ const Admin = {
           <h3 class="modal-title">Create New Event</h3>
           <button class="modal-close" onclick="UI.closeModal('event-form-modal')">&times;</button>
         </div>
-        <form id="create-event-form" onsubmit="Admin.handleSaveEvent(event)">
+        <form id="create-event-form" onsubmit="Admin.handleSaveEvent(event)" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
           <div class="modal-body">
             <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 1rem;">
               <div class="form-group">
@@ -726,7 +726,7 @@ const Admin = {
           <h3 class="modal-title">Add New Venue</h3>
           <button class="modal-close" onclick="UI.closeModal('venue-form-modal')">&times;</button>
         </div>
-        <form onsubmit="Admin.handleSaveVenue(event)">
+        <form onsubmit="Admin.handleSaveVenue(event)" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
           <div class="modal-body">
             <div class="form-group">
               <label class="form-label">Venue Name</label>
@@ -940,7 +940,7 @@ const Admin = {
           <h3 class="modal-title">Create Promo Discount Code</h3>
           <button class="modal-close" onclick="UI.closeModal('promo-form-modal')">&times;</button>
         </div>
-        <form onsubmit="Admin.handleSavePromo(event)">
+        <form onsubmit="Admin.handleSavePromo(event)" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
           <div class="modal-body">
             <div class="form-group">
               <label class="form-label">Coupon Code (Uppercase)</label>

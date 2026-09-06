@@ -66,7 +66,7 @@ const BookingsManager = {
           <h3 class="modal-title">Book Tickets</h3>
           <button class="modal-close" onclick="UI.closeModal('booking-process-modal')">&times;</button>
         </div>
-        <form id="booking-submit-form" onsubmit="BookingsManager.handleBookingSubmit(event, '${event.id}')">
+        <form id="booking-submit-form" onsubmit="BookingsManager.handleBookingSubmit(event, '${event.id}')" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
           <div class="modal-body">
             <!-- Event Summary -->
             <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1.25rem; background:var(--bg-tertiary); padding:1rem; border-radius:var(--radius-md);">

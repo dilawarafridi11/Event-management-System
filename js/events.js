@@ -278,7 +278,7 @@ const EventsManager = {
           <h3 class="modal-title">Write Attendee Review</h3>
           <button class="modal-close" onclick="UI.closeModal('add-review-modal')">&times;</button>
         </div>
-        <form onsubmit="EventsManager.handleReviewSubmit(event, '${eventId}')">
+        <form onsubmit="EventsManager.handleReviewSubmit(event, '${eventId}')" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
           <div class="modal-body">
             <div class="form-group">
               <label class="form-label">Your Star Rating</label>
