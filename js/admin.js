@@ -450,8 +450,9 @@ const Admin = {
     };
   },
 
-  handleSaveEvent(e) {
+  async handleSaveEvent(e) {
     e.preventDefault();
+    const session = Auth.getSession();
     const newEvent = {
       title: document.getElementById('event-input-title').value,
       category: document.getElementById('event-input-category').value,
@@ -463,11 +464,22 @@ const Admin = {
       capacity: parseInt(document.getElementById('event-input-capacity').value, 10),
       ticketPrice: parseFloat(document.getElementById('event-input-price').value),
       organizer: document.getElementById('event-input-organizer').value,
+      organizerId: session ? session.id : null,
       status: document.getElementById('event-input-status').value,
       image: document.getElementById('event-input-image').value
     };
 
-    Storage.saveEvent(newEvent);
+    const savedEvent = Storage.saveEvent(newEvent);
+    
+    // Sync with backend API
+    if (typeof API !== 'undefined' && API.createEvent) {
+      try {
+        await API.createEvent(savedEvent);
+      } catch (err) {
+        console.warn('API sync failed:', err);
+      }
+    }
+
     UI.closeModal('event-form-modal');
     UI.showToast('New event created successfully!', 'success', 'Created');
     this.renderEventsTable();

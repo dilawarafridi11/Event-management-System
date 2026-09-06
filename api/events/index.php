@@ -104,6 +104,7 @@ if ($method === 'GET') {
             'bookedSeats' => (int)$e['booked_seats'],
             'availableSeats' => (int)$e['available_seats'],
             'ticketPrice' => (float)$e['ticket_price'],
+            'organizerId' => $e['organizer_id'],
             'organizer' => $e['organizer'],
             'image' => $e['image'],
             'status' => $e['status'],
@@ -143,8 +144,9 @@ if ($method === 'GET') {
     }
 
     $id = 'EVT-' . rand(1100, 9999);
+    $organizerId = trim($input['organizerId'] ?? 'USR-101');
 
-    $stmt = $pdo->prepare("INSERT INTO events (id, title, description, category, date, start_time, end_time, venue, venue_id, location, capacity, booked_seats, ticket_price, organizer, image, status, featured, rating, review_count, tiers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, 5.0, 0, ?)");
+    $stmt = $pdo->prepare("INSERT INTO events (id, title, description, category, date, start_time, end_time, venue, venue_id, location, capacity, booked_seats, ticket_price, organizer_id, organizer, image, status, featured, rating, review_count, tiers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 5.0, 0, ?)");
     $stmt->execute([
         $id,
         $title,
@@ -158,6 +160,7 @@ if ($method === 'GET') {
         $location,
         $capacity,
         $ticketPrice,
+        $organizerId,
         $organizer,
         $image,
         $status,

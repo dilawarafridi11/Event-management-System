@@ -45,6 +45,7 @@ if ($method === 'GET') {
         'bookedSeats' => (int)$e['booked_seats'],
         'availableSeats' => (int)$e['available_seats'],
         'ticketPrice' => (float)$e['ticket_price'],
+        'organizerId' => $e['organizer_id'],
         'organizer' => $e['organizer'],
         'image' => $e['image'],
         'status' => $e['status'],

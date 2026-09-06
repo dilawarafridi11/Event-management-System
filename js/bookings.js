@@ -247,7 +247,7 @@ const BookingsManager = {
     btn.disabled = true;
     btn.innerHTML = `<span class="spin"><i class="fa-solid fa-rotate-right"></i></span> Processing Payment...`;
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         const booking = Storage.createBooking({
           userId: session.id,
@@ -267,6 +267,14 @@ const BookingsManager = {
           paymentStatus: 'Paid',
           bookingStatus: 'Confirmed'
         });
+
+        if (typeof API !== 'undefined' && API.createBooking) {
+          try {
+            await API.createBooking(booking);
+          } catch (apiErr) {
+            console.warn('Booking sync to backend failed:', apiErr);
+          }
+        }
 
         UI.closeModal('booking-process-modal');
         UI.showToast('Booking and payment completed successfully!', 'success', 'Confirmed');
