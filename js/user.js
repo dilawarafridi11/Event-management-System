@@ -422,7 +422,10 @@ const User = {
 
         <div class="flex justify-between items-center flex-wrap gap-2">
           <span class="text-xs text-muted">Booked on ${b.bookingDate}</span>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
+            <button class="btn btn-outline btn-sm" onclick="BookingsManager.downloadCalendarInvite('${b.id}')" title="Add to Calendar">
+              <i class="fa-solid fa-calendar-plus text-primary"></i> Calendar
+            </button>
             <button class="btn btn-primary btn-sm" onclick="BookingsManager.showDigitalTicket('${b.id}')">
               <i class="fa-solid fa-ticket"></i> View Digital Pass
             </button>
@@ -461,7 +464,12 @@ const User = {
         return;
       }
 
-      container.innerHTML = bookings.map(b => `
+      container.innerHTML = bookings.map(b => {
+        const attendeePhoto = b.attendeeImage || 
+                              (Storage.getUserById(b.userId)?.avatar) || 
+                              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+
+        return `
         <div style="margin-bottom: 2.5rem;">
           <div class="ticket-wrapper">
             <div class="ticket-header">
@@ -475,13 +483,27 @@ const User = {
             </div>
             <div class="ticket-body">
               <div class="ticket-info-grid">
-                <div>
-                  <div class="ticket-info-label">Pass Holder</div>
-                  <div class="ticket-info-val">${b.userName}</div>
+                <!-- Attendee Photo & Identity Badge -->
+                <div style="grid-column: span 2; display: flex; align-items: center; gap: 1rem; background: var(--bg-tertiary); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                  <div class="avatar" style="width: 58px; height: 58px; border-radius: 50%; overflow: hidden; border: 2.5px solid var(--primary); box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25); flex-shrink: 0; background: var(--bg-secondary);">
+                    <img src="${attendeePhoto}" alt="${b.userName}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';">
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="ticket-info-label" style="display: flex; align-items: center; gap: 0.35rem; color: var(--primary);">
+                      <i class="fa-solid fa-id-badge"></i> Verified Pass Holder
+                    </div>
+                    <div class="ticket-info-val font-bold" style="font-size: 1.1rem; color: var(--text-primary); margin: 0.15rem 0;">${b.userName}</div>
+                    <div class="text-xs text-muted truncate">${b.userEmail}</div>
+                  </div>
                 </div>
+
                 <div>
                   <div class="ticket-info-label">Admit Count</div>
-                  <div class="ticket-info-val">${b.tickets} Person(s)</div>
+                  <div class="ticket-info-val">${b.tickets} Person(s) (${b.tierName || 'Standard'})</div>
+                </div>
+                <div>
+                  <div class="ticket-info-label">Total Paid</div>
+                  <div class="ticket-info-val text-primary font-bold">${Storage.formatPrice(b.totalAmount)}</div>
                 </div>
                 <div>
                   <div class="ticket-info-label">Date</div>
@@ -497,11 +519,13 @@ const User = {
                 </div>
                 <div>
                   <div class="ticket-info-label">Pass ID</div>
-                  <div class="ticket-info-val text-primary">${b.id}</div>
+                  <div class="ticket-info-val text-primary font-mono">${b.id}</div>
                 </div>
                 <div>
                   <div class="ticket-info-label">Admission Status</div>
-                  <div class="ticket-info-val text-success"><i class="fa-solid fa-check"></i> Verified Valid</div>
+                  <div class="ticket-info-val ${b.checkInStatus === 'Checked-In' ? 'text-success' : 'text-primary'}">
+                    ${b.checkInStatus === 'Checked-In' ? '<i class="fa-solid fa-check"></i> Checked-In at Gate' : '• Valid for Entry'}
+                  </div>
                 </div>
               </div>
               <div class="ticket-qr-section">
@@ -512,12 +536,17 @@ const User = {
               </div>
             </div>
           </div>
-          <div class="flex justify-center gap-3" style="margin-top: 1rem;">
+          <div class="flex justify-center gap-3" style="margin-top: 1rem; flex-wrap: wrap;">
             <button class="btn btn-outline btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Pass</button>
+            <button class="btn btn-outline btn-sm" onclick="BookingsManager.downloadCalendarInvite('${b.id}')"><i class="fa-solid fa-calendar-plus text-primary"></i> Add to Calendar</button>
             <button class="btn btn-secondary btn-sm" onclick="BookingsManager.downloadTicketImage('${b.id}')">⬇ Download Pass (PNG)</button>
+            ${(b.guests && b.guests.length > 1) ? `
+              <button class="btn btn-primary btn-sm" onclick="BookingsManager.showDigitalTicket('${b.id}')"><i class="fa-solid fa-users"></i> Guest Passes (${b.guests.length})</button>
+            ` : ''}
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }, 400);
   },
 

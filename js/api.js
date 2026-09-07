@@ -255,5 +255,38 @@ const API = {
       method: 'POST',
       body: JSON.stringify({ userId })
     });
+  },
+
+  // 10. File / Image Upload Engine
+  async uploadImage(fileOrBase64) {
+    const url = `${this.getBaseUrl()}/upload/index.php`;
+    try {
+      if (typeof fileOrBase64 === 'string') {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ image: fileOrBase64 })
+        });
+        return await res.json();
+      } else if (fileOrBase64 instanceof File || fileOrBase64 instanceof Blob) {
+        const formData = new FormData();
+        formData.append('image', fileOrBase64);
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          },
+          body: formData
+        });
+        return await res.json();
+      }
+      return { success: false, message: 'Invalid image format provided' };
+    } catch (err) {
+      console.warn('[API] Upload error:', err);
+      return { success: false, message: err.message };
+    }
   }
 };

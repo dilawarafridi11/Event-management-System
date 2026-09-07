@@ -52,7 +52,9 @@ if ($method === 'GET') {
         'checkInStatus' => $b['check_in_status'],
         'checkedInAt' => $b['checked_in_at'],
         'bookingDate' => $b['booking_date'],
-        'qrCodeData' => $b['qr_code_data']
+        'qrCodeData' => $b['qr_code_data'],
+        'attendeeImage' => $b['attendee_image'] ?? '',
+        'guests' => !empty($b['guests_json']) ? json_decode($b['guests_json'], true) : null
     ], 200);
 
 } elseif ($method === 'PUT' || ($method === 'POST' && isset($input['action']) && $input['action'] === 'cancel')) {
@@ -100,6 +102,15 @@ if ($method === 'GET') {
             $pdo->rollBack();
         }
         sendError('Cancellation failed: ' . $e->getMessage(), 500);
+    }
+} elseif ($method === 'DELETE' || ($method === 'POST' && isset($input['action']) && $input['action'] === 'delete')) {
+    // Delete booking
+    try {
+        $del = $pdo->prepare("DELETE FROM bookings WHERE id = ?");
+        $del->execute([$id]);
+        sendResponse(['id' => $id], 200, 'Booking deleted successfully');
+    } catch (Exception $e) {
+        sendError('Delete failed: ' . $e->getMessage(), 500);
     }
 } else {
     sendError('Method Not Allowed', 405);

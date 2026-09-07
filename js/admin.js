@@ -501,16 +501,45 @@ const Admin = {
   },
 
   // 3. User Management Page
-  initUsersPage() {
+  // 3. User Management Page (Organizers Only)
+  async initUsersPage() {
     Auth.requireAuth('Admin');
     const tbody = document.getElementById('admin-users-tbody');
     if (tbody) UI.showSkeleton(tbody, 'table', 5);
+
+    // Sync from API if available to ensure MySQL and local storage match
+    if (typeof API !== 'undefined') {
+      try {
+        const res = await API.getUsers();
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          res.data.forEach(u => Storage.saveUser(u));
+        }
+      } catch (err) {}
+      try {
+        const evtRes = await API.getEvents();
+        if (evtRes && evtRes.success && Array.isArray(evtRes.data)) {
+          evtRes.data.forEach(e => Storage.saveEvent(e));
+        }
+      } catch (err) {}
+      try {
+        const bkgRes = await API.getBookings();
+        if (bkgRes && bkgRes.success && Array.isArray(bkgRes.data)) {
+          bkgRes.data.forEach(b => {
+            const bookings = Storage.getBookings();
+            if (!bookings.some(existing => existing.id === b.id)) {
+              bookings.unshift(b);
+              localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+            }
+          });
+        }
+      } catch (err) {}
+    }
 
     setTimeout(() => {
       this.renderUsersTable();
 
       const searchInput = document.getElementById('admin-users-search');
-      const roleFilter = document.getElementById('admin-users-role-filter');
+      const statusFilter = document.getElementById('admin-users-status-filter');
 
       const triggerFilter = () => {
         if (tbody) UI.simulateLoading(tbody, () => this.renderUsersTable(), 'table', 4, 250);
@@ -518,7 +547,7 @@ const Admin = {
       };
 
       if (searchInput) searchInput.addEventListener('input', triggerFilter);
-      if (roleFilter) roleFilter.addEventListener('change', triggerFilter);
+      if (statusFilter) statusFilter.addEventListener('change', triggerFilter);
     }, 400);
   },
 
@@ -528,54 +557,259 @@ const Admin = {
 
     let users = Storage.getUsers();
     const search = (document.getElementById('admin-users-search')?.value || '').toLowerCase();
-    const role = document.getElementById('admin-users-role-filter')?.value || 'All';
+    const status = document.getElementById('admin-users-status-filter')?.value || 'All';
+
+    // CRITICAL REQUIREMENT: Only show Organizers; do not display regular users or SuperAdmins
+    users = users.filter(u => u.role === 'Organizer');
 
     users = users.filter(u => {
-      const matchSearch = u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.phone && u.phone.includes(search));
-      const matchRole = role === 'All' || u.role === role;
-      return matchSearch && matchRole;
+      const matchSearch = (u.name || '').toLowerCase().includes(search) || 
+                          (u.email || '').toLowerCase().includes(search) || 
+                          (u.phone && u.phone.includes(search)) || 
+                          (u.id && u.id.toLowerCase().includes(search));
+      const matchStatus = status === 'All' || u.status === status;
+      return matchSearch && matchStatus;
     });
 
     if (users.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="padding: 2rem;">No users found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center" style="padding: 2.5rem; color: var(--text-muted);"><i class="fa-solid fa-users" style="font-size: 2rem; margin-bottom: 0.5rem; display:block;"></i>No organizers found matching your criteria.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = users.map(u => `
-      <tr>
-        <td>
-          <div class="flex items-center gap-3">
-            <div class="avatar" style="width:36px; height:36px;">
-              <img src="${u.avatar}" alt="${u.name}">
+    const events = Storage.getEvents();
+
+    tbody.innerHTML = users.map(u => {
+      const organizerEvents = events.filter(e => 
+        e.organizerId === u.id || 
+        (e.organizer && e.organizer.toLowerCase() === (u.name || '').toLowerCase())
+      );
+      const eventsCount = organizerEvents.length;
+      const eventsText = `${eventsCount} Event${eventsCount === 1 ? '' : 's'}`;
+      const avatarUrl = u.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80';
+
+      return `
+        <tr class="organizer-row" style="cursor: pointer;" onclick="Admin.viewOrganizerBookings('${u.id}')" title="Click to view users who booked events through ${u.name}">
+          <td>
+            <div class="avatar" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.12); flex-shrink: 0;">
+              <img src="${avatarUrl}" alt="${u.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80';">
             </div>
-            <div>
-              <div class="font-bold text-primary">${u.name}</div>
-              <div class="text-xs text-muted">${u.id}</div>
+          </td>
+          <td>
+            <div class="font-bold text-primary hover-underline" style="font-size: 0.95rem;">${u.name}</div>
+          </td>
+          <td>
+            <span class="badge" style="background: var(--bg-tertiary); color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.8rem; border: 1px solid var(--border-color);">${u.id}</span>
+          </td>
+          <td>
+            <a href="mailto:${u.email}" class="text-secondary" onclick="event.stopPropagation()">${u.email}</a>
+          </td>
+          <td>
+            <span>${u.phone || 'N/A'}</span>
+          </td>
+          <td>
+            <span class="badge badge-warning">Organizer</span>
+          </td>
+          <td>
+            <span>${u.registeredDate || u.createdAt || '2026-09-06'}</span>
+          </td>
+          <td>
+            <strong>${eventsText}</strong>
+          </td>
+          <td>
+            <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">
+              ${u.status || 'Active'}
+            </span>
+          </td>
+          <td onclick="event.stopPropagation()">
+            <div class="action-btns">
+              <button class="btn btn-sm btn-primary" onclick="Admin.viewOrganizerBookings('${u.id}')" title="View Booked Users">
+                <i class="fa-solid fa-users"></i> Booked Users
+              </button>
+              <button class="btn btn-icon btn-sm" onclick="Admin.toggleUserStatus('${u.id}')" title="${u.status === 'Pending' ? 'Approve Organizer' : 'Toggle Active/Inactive'}">
+                ${u.status === 'Pending' ? '<i class="fa-solid fa-check"></i>' : (u.status === 'Active' ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>')}
+              </button>
+              <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteUserAction('${u.id}')" title="Delete Organizer">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  async viewOrganizerBookings(organizerId) {
+    let organizer = Storage.getUserById(organizerId);
+    if (!organizer && typeof API !== 'undefined' && API.getUserProfile) {
+      try {
+        const res = await API.getUserProfile(organizerId);
+        if (res && res.success && res.data) organizer = res.data;
+      } catch (e) {}
+    }
+    if (!organizer) {
+      UI.showToast('Organizer not found.', 'error');
+      return;
+    }
+
+    // Sync latest bookings and events from API if available
+    if (typeof API !== 'undefined') {
+      try {
+        const bkgRes = await API.getBookings();
+        if (bkgRes && bkgRes.success && Array.isArray(bkgRes.data)) {
+          bkgRes.data.forEach(b => {
+            const bookings = Storage.getBookings();
+            if (!bookings.some(x => x.id === b.id)) {
+              bookings.unshift(b);
+              localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+            }
+          });
+        }
+      } catch (e) {}
+    }
+
+    const allEvents = Storage.getEvents();
+    const orgEvents = allEvents.filter(e => 
+      e.organizerId === organizer.id || 
+      (e.organizer && e.organizer.toLowerCase() === organizer.name.toLowerCase())
+    );
+    const orgEventIds = orgEvents.map(e => e.id);
+
+    const allBookings = Storage.getBookings();
+    const orgBookings = allBookings.filter(b => orgEventIds.includes(b.eventId));
+
+    const modalTitle = document.getElementById('organizer-bookings-modal-title');
+    const modalSubtitle = document.getElementById('organizer-bookings-modal-subtitle');
+    const modalBody = document.getElementById('organizer-bookings-modal-body');
+
+    if (modalTitle) {
+      modalTitle.innerHTML = `<i class="fa-solid fa-users" style="color: var(--primary); margin-right: 0.5rem;"></i> Attendees Booked via ${organizer.name}`;
+    }
+    if (modalSubtitle) {
+      modalSubtitle.innerText = `Organizer: ${organizer.name} (${organizer.id}) • Email: ${organizer.email} • Phone: ${organizer.phone || 'N/A'}`;
+    }
+
+    const totalTickets = orgBookings.reduce((sum, b) => sum + (Number(b.tickets) || 1), 0);
+    const totalRevenue = orgBookings
+      .filter(b => b.paymentStatus === 'Paid')
+      .reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+
+    const summaryCardsHtml = `
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="card" style="padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <div class="text-xs text-muted">Total Events</div>
+          <div class="font-bold text-xl" style="color: var(--primary);">${orgEvents.length}</div>
+        </div>
+        <div class="card" style="padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <div class="text-xs text-muted">Total Bookings</div>
+          <div class="font-bold text-xl" style="color: var(--info);">${orgBookings.length}</div>
+        </div>
+        <div class="card" style="padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <div class="text-xs text-muted">Tickets Sold</div>
+          <div class="font-bold text-xl" style="color: var(--warning);">${totalTickets}</div>
+        </div>
+        <div class="card" style="padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <div class="text-xs text-muted">Total Revenue</div>
+          <div class="font-bold text-xl" style="color: var(--success);">${Storage.formatPrice(totalRevenue)}</div>
+        </div>
+      </div>
+    `;
+
+    if (orgBookings.length === 0) {
+      if (modalBody) {
+        modalBody.innerHTML = `
+          ${summaryCardsHtml}
+          <div class="text-center" style="padding: 3rem 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
+            <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">
+              <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <h3 class="font-bold text-lg" style="margin-bottom: 0.5rem;">No Bookings Found</h3>
+            <p class="text-secondary text-sm" style="max-width: 450px; margin: 0 auto 1.5rem auto;">
+              No users have booked tickets for any events organized by <strong>${organizer.name}</strong> yet.
+              ${orgEvents.length === 0 ? 'This organizer currently has 0 published events.' : 'Events are currently open for attendee registration.'}
+            </p>
           </div>
-        </td>
-        <td>${u.email}</td>
-        <td>${u.phone || 'N/A'}</td>
-        <td><span class="badge ${u.role === 'SuperAdmin' ? 'badge-confirmed' : (u.role === 'Organizer' ? 'badge-warning' : 'badge-info')}">${u.role}</span></td>
-        <td>${u.registeredDate || '2026-01-01'}</td>
-        <td><strong>${u.eventsBooked || 0}</strong> events</td>
-        <td>
-          <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">
-            ${u.status || 'Active'}
-          </span>
-        </td>
-        <td>
-          <div class="action-btns">
-            <button class="btn btn-icon btn-sm" onclick="Admin.toggleUserStatus('${u.id}')" title="${u.status === 'Pending' ? 'Approve Organizer' : 'Toggle Active/Inactive'}">
-              ${u.status === 'Pending' ? '<i class="fa-solid fa-check"></i>' : (u.status === 'Active' ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>')}
-            </button>
-            <button class="btn btn-icon btn-sm text-danger" onclick="Admin.deleteUserAction('${u.id}')" title="Delete User">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+        `;
+      }
+    } else {
+      const allUsers = Storage.getUsers();
+      const bookingsTableHtml = `
+        ${summaryCardsHtml}
+        <div class="table-card" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booked User / Attendee</th>
+                  <th>Contact Info</th>
+                  <th>Event Booked</th>
+                  <th>Tickets & Tier</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Booking Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${orgBookings.map(b => {
+                  const attendeeUser = allUsers.find(u => u.id === b.userId || (u.email && u.email.toLowerCase() === (b.userEmail || '').toLowerCase()));
+                  const attendeeAvatar = (attendeeUser && attendeeUser.avatar) ? attendeeUser.avatar : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80';
+                  const attendeePhone = (attendeeUser && attendeeUser.phone) ? attendeeUser.phone : (b.phone || 'N/A');
+
+                  return `
+                    <tr>
+                      <td>
+                        <div class="flex items-center gap-3">
+                          <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden;">
+                            <img src="${attendeeAvatar}" alt="${b.userName || 'Attendee'}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80';">
+                          </div>
+                          <div>
+                            <div class="font-bold text-primary">${b.userName || 'Unknown User'}</div>
+                            <div class="text-xs text-muted font-mono">${b.userId || 'Guest'}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div><a href="mailto:${b.userEmail}" class="text-secondary text-sm">${b.userEmail}</a></div>
+                        <div class="text-xs text-muted">${attendeePhone}</div>
+                      </td>
+                      <td>
+                        <div class="font-semibold text-sm">${b.eventTitle || 'Event'}</div>
+                        <div class="text-xs text-muted"><i class="fa-solid fa-calendar-day"></i> ${b.eventDate || ''} ${b.eventTime || ''}</div>
+                      </td>
+                      <td>
+                        <div><strong>${b.tickets || 1}x</strong> Ticket${(b.tickets || 1) > 1 ? 's' : ''}</div>
+                        <div class="text-xs text-secondary">${b.tierName || 'General Admission'}</div>
+                      </td>
+                      <td>
+                        <strong class="text-success">${Storage.formatPrice(b.totalAmount || 0)}</strong>
+                      </td>
+                      <td>
+                        <span class="badge ${b.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}">
+                          ${b.paymentStatus || 'Paid'}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge ${b.checkInStatus === 'Checked-In' ? 'badge-confirmed' : 'badge-light'}">
+                          ${b.checkInStatus || 'Pending'}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="text-xs text-muted">${b.bookingDate || 'N/A'}</span>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
           </div>
-        </td>
-      </tr>
-    `).join('');
+        </div>
+      `;
+      if (modalBody) {
+        modalBody.innerHTML = bookingsTableHtml;
+      }
+    }
+
+    UI.openModal('organizer-bookings-modal');
   },
 
   async toggleUserStatus(userId) {
@@ -590,7 +824,7 @@ const Admin = {
       UI.showToast(`Organizer approved and marked as Active.`, 'success');
     } else {
       user.status = user.status === 'Active' ? 'Inactive' : 'Active';
-      UI.showToast(`User marked as ${user.status}.`, 'info');
+      UI.showToast(`Organizer marked as ${user.status}.`, 'info');
     }
     Storage.saveUser(user);
     
@@ -667,14 +901,19 @@ const Admin = {
     }
 
     UI.confirm(
-      'Delete User',
-      `Are you sure you want to delete user "${user.name}"? This action cannot be undone.`,
-      () => {
+      'Delete Organizer',
+      `Are you sure you want to delete organizer "${user.name}"? This action cannot be undone.`,
+      async () => {
         Storage.deleteUser(userId);
-        UI.showToast('User account deleted.', 'info');
+        if (typeof API !== 'undefined' && API.deleteUser) {
+          try {
+            await API.deleteUser(userId);
+          } catch(e) {}
+        }
+        UI.showToast('Organizer account deleted.', 'info');
         Admin.renderUsersTable();
       },
-      'Yes, Delete User',
+      'Yes, Delete Organizer',
       'btn-danger'
     );
   },

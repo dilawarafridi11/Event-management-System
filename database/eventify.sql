@@ -91,6 +91,7 @@ CREATE TABLE `bookings` (
   `user_id` VARCHAR(50) NOT NULL,
   `user_name` VARCHAR(150) NOT NULL,
   `user_email` VARCHAR(191) NOT NULL,
+  `attendee_image` LONGTEXT DEFAULT NULL,
   `event_id` VARCHAR(50) NOT NULL,
   `event_title` VARCHAR(255) NOT NULL,
   `event_date` DATE NOT NULL,
@@ -185,7 +186,22 @@ CREATE TABLE `settings` (
 
 -- Seed Users (Passwords: admin123 / user123)
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `phone`, `location`, `avatar`, `events_booked`, `status`, `registered_date`) VALUES
-('USR-101', 'Alexander Wright', 'admin@eventify.com', '$2y$10$Bg8CCrZizjPCeDHrJPNJdOxfx0KW7unAnm6E6crcZYgpQ/4nkxIpq', 'SuperAdmin', '+1 (555) 019-2834', 'San Francisco, CA', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', 14, 'Active', '2025-11-15');
+('USR-101', 'Alexander Wright', 'admin@eventify.com', '$2y$10$ganyrLBwhVG6DK6gDfz9COGLjbWVCov0F/YUSMUfFBWzTvrm8aqJi', 'SuperAdmin', '+1 (555) 019-2834', 'San Francisco, CA', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', 14, 'Active', '2025-11-15'),
+('USR-102', 'Sarah Jenkins', 'user@eventify.com', '$2y$10$imvSr2qeWoE/1dARUVddh.RN4t322vfvr0htIZTJsbwEmSba4o/Lq', 'User', '+1 (555) 349-8271', 'New York, NY', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', 2, 'Active', '2026-01-10'),
+('USR-354', 'Farman', 'farmann@gmail.com', '$2y$10$imvSr2qeWoE/1dARUVddh.RN4t322vfvr0htIZTJsbwEmSba4o/Lq', 'Organizer', '03078833943', 'Islamabad, PK', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', 0, 'Active', '2026-09-06'),
+('USR-205', 'Elena Rostova', 'elena@techsummit.io', '$2y$10$imvSr2qeWoE/1dARUVddh.RN4t322vfvr0htIZTJsbwEmSba4o/Lq', 'Organizer', '+1 (555) 492-1082', 'San Francisco, CA', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80', 0, 'Active', '2026-08-15');
+
+-- Seed Venues
+INSERT INTO `venues` (`id`, `name`, `location`, `capacity`, `price`, `contact`, `availability`, `amenities`, `image`) VALUES
+('VEN-101', 'Silicon Valley Convention Center', '500 Tech Parkway, San Jose, CA', 1200, 4500.00, '+1 (555) 901-2834', 'Available', 'High-Speed Wi-Fi, 4K Projectors, VIP Lounge, Catering Kitchen, Valet Parking', 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80');
+
+-- Seed Events
+INSERT INTO `events` (`id`, `title`, `description`, `category`, `date`, `start_time`, `end_time`, `venue`, `venue_id`, `location`, `capacity`, `booked_seats`, `ticket_price`, `organizer_id`, `organizer`, `image`, `status`, `featured`, `rating`, `review_count`, `tiers_json`) VALUES
+('EVT-1001', 'Global AI & Tech Summit 2026', 'Premier annual gathering of artificial intelligence pioneers, enterprise architects, and venture builders.', 'Technology', '2026-10-15', '09:00 AM', '05:00 PM', 'Silicon Valley Convention Center', 'VEN-101', 'San Jose, CA', 500, 2, 1200.00, 'USR-205', 'Elena Rostova', 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80', 'Upcoming', 1, 4.90, 18, '[{"name":"General Admission","price":1200,"benefits":["Keynote Access","Expo Floor","Lunch Buffet"]},{"name":"VIP All-Access","price":2160,"benefits":["Front Row Seating","VIP Lounge","Speaker Meet & Greet"]}]');
+
+-- Seed Bookings
+INSERT INTO `bookings` (`id`, `user_id`, `user_name`, `user_email`, `attendee_image`, `event_id`, `event_title`, `event_date`, `event_time`, `venue`, `tickets`, `tier_name`, `ticket_price`, `discount_amount`, `promo_code`, `total_amount`, `payment_status`, `booking_status`, `payment_method`, `check_in_status`, `booking_date`, `qr_code_data`) VALUES
+('BKG-2026-01', 'USR-102', 'Sarah Jenkins', 'user@eventify.com', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', 'EVT-1001', 'Global AI & Tech Summit 2026', '2026-10-15', '09:00 AM', 'Silicon Valley Convention Center', 2, 'VIP All-Access', 2160.00, 0.00, NULL, 4320.00, 'Paid', 'Confirmed', 'Credit Card', 'Pending', '2026-09-01 14:30:00', 'EVTIFY-BKG-2026-01-SARAH-JENKINS-EVT-1001');
 
 
 

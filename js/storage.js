@@ -21,8 +21,47 @@ const STORAGE_KEYS = {
 
 // Seed Data Definition
 const INITIAL_SEED_DATA = {
-  events: [],
-  venues: [],
+  events: [
+    {
+      id: 'EVT-1001',
+      title: 'Global AI & Tech Summit 2026',
+      description: 'Premier annual gathering of artificial intelligence pioneers, enterprise architects, and venture builders.',
+      category: 'Technology',
+      date: '2026-10-15',
+      startTime: '09:00 AM',
+      endTime: '05:00 PM',
+      venue: 'Silicon Valley Convention Center',
+      venueId: 'VEN-101',
+      location: 'San Jose, CA',
+      capacity: 500,
+      bookedSeats: 2,
+      ticketPrice: 1200,
+      organizerId: 'USR-205',
+      organizer: 'Elena Rostova',
+      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.9,
+      reviewCount: 18,
+      tiers: [
+        { name: 'General Admission', price: 1200, benefits: ['Keynote Access', 'Expo Floor', 'Lunch Buffet'] },
+        { name: 'VIP All-Access', price: 2160, benefits: ['Front Row Seating', 'VIP Lounge', 'Speaker Meet & Greet'] }
+      ]
+    }
+  ],
+  venues: [
+    {
+      id: 'VEN-101',
+      name: 'Silicon Valley Convention Center',
+      location: '500 Tech Parkway, San Jose, CA',
+      capacity: 1200,
+      price: 4500,
+      contact: '+1 (555) 901-2834',
+      availability: 'Available',
+      amenities: ['High-Speed Wi-Fi', '4K Projectors', 'VIP Lounge', 'Catering Kitchen', 'Valet Parking'],
+      image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80'
+    }
+  ],
   users: [
     {
       id: 'USR-101',
@@ -34,11 +73,75 @@ const INITIAL_SEED_DATA = {
       location: 'San Francisco, CA',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
       registeredDate: '2025-11-15',
+      eventsBooked: 14,
+      status: 'Active'
+    },
+    {
+      id: 'USR-102',
+      name: 'Sarah Jenkins',
+      email: 'user@eventify.com',
+      password: 'user123',
+      role: 'User',
+      phone: '+1 (555) 349-8271',
+      location: 'New York, NY',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+      registeredDate: '2026-01-10',
+      eventsBooked: 2,
+      status: 'Active'
+    },
+    {
+      id: 'USR-354',
+      name: 'Farman',
+      email: 'farmann@gmail.com',
+      password: 'organizer123',
+      role: 'Organizer',
+      phone: '03078833943',
+      location: 'Islamabad, PK',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+      registeredDate: '2026-09-06',
+      eventsBooked: 0,
+      status: 'Active'
+    },
+    {
+      id: 'USR-205',
+      name: 'Elena Rostova',
+      email: 'elena@techsummit.io',
+      password: 'organizer123',
+      role: 'Organizer',
+      phone: '+1 (555) 492-1082',
+      location: 'San Francisco, CA',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+      registeredDate: '2026-08-15',
       eventsBooked: 0,
       status: 'Active'
     }
   ],
-  bookings: [],
+  bookings: [
+    {
+      id: 'BKG-2026-01',
+      userId: 'USR-102',
+      userName: 'Sarah Jenkins',
+      userEmail: 'user@eventify.com',
+      eventId: 'EVT-1001',
+      attendeeImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+      eventTitle: 'Global AI & Tech Summit 2026',
+      eventDate: '2026-10-15',
+      eventTime: '09:00 AM',
+      venue: 'Silicon Valley Convention Center',
+      tickets: 2,
+      tierName: 'VIP All-Access',
+      ticketPrice: 2160,
+      discountAmount: 0,
+      promoCode: null,
+      totalAmount: 4320,
+      paymentStatus: 'Paid',
+      bookingStatus: 'Confirmed',
+      paymentMethod: 'Credit Card',
+      checkInStatus: 'Pending',
+      bookingDate: '2026-09-01 14:30',
+      qrCodeData: 'EVTIFY-BKG-2026-01-SARAH-JENKINS-EVT-1001'
+    }
+  ],
   notifications: [],
   favorites: [],
   promos: [],
@@ -248,6 +351,19 @@ const Storage = {
     bookingData.checkInStatus = 'Pending';
     bookingData.tierName = bookingData.tierName || 'General Admission';
     bookingData.discountAmount = bookingData.discountAmount || 0;
+    bookingData.attendeeImage = bookingData.attendeeImage || '';
+    if (!bookingData.attendeeImage && bookingData.userId) {
+      const user = this.getUserById(bookingData.userId);
+      if (user && user.avatar) {
+        bookingData.attendeeImage = user.avatar;
+      }
+    }
+    if (bookingData.guests && Array.isArray(bookingData.guests)) {
+      bookingData.guests.forEach((g, idx) => {
+        if (!g.image) g.image = bookingData.attendeeImage || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+        if (!g.name) g.name = idx === 0 ? bookingData.userName : `${bookingData.userName} (Guest ${idx + 1})`;
+      });
+    }
     
     // Update seat count on event
     event.bookedSeats = (event.bookedSeats || 0) + requestedTickets;

@@ -67,7 +67,9 @@ if ($method === 'GET') {
             'checkInStatus' => $b['check_in_status'],
             'checkedInAt' => $b['checked_in_at'],
             'bookingDate' => $b['booking_date'],
-            'qrCodeData' => $b['qr_code_data']
+            'qrCodeData' => $b['qr_code_data'],
+            'attendeeImage' => $b['attendee_image'] ?? '',
+            'guests' => !empty($b['guests_json']) ? json_decode($b['guests_json'], true) : null
         ];
     }, $bookings);
 
@@ -80,6 +82,7 @@ if ($method === 'GET') {
     $userId = trim($input['userId'] ?? 'USR-102');
     $userName = trim($input['userName'] ?? 'Sophia Martinez');
     $userEmail = trim($input['userEmail'] ?? 'user@eventify.com');
+    $attendeeImage = trim($input['attendeeImage'] ?? '');
     $eventId = trim($input['eventId'] ?? '');
     $tickets = max(1, (int)($input['tickets'] ?? 1));
     $tierName = trim($input['tierName'] ?? 'General Admission');
@@ -90,6 +93,16 @@ if ($method === 'GET') {
 
     if (empty($eventId)) {
         sendError('Event ID is required', 422);
+    }
+
+    // If no custom image provided, fallback to attendee user avatar
+    if (empty($attendeeImage) && !empty($userId)) {
+        $uStmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ? LIMIT 1");
+        $uStmt->execute([$userId]);
+        $uRow = $uStmt->fetch();
+        if ($uRow && !empty($uRow['avatar'])) {
+            $attendeeImage = $uRow['avatar'];
+        }
     }
 
     try {
@@ -123,13 +136,18 @@ if ($method === 'GET') {
         $qrCodeData = 'EVTIFY-' . $bookingId . '-' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $userName)) . '-' . $eventId . '-' . $tickets . 'TIX';
         $bookingDate = date('Y-m-d H:i:s');
 
+        $guests = $input['guests'] ?? null;
+        $guestsJson = !empty($guests) ? (is_string($guests) ? $guests : json_encode($guests)) : null;
+
         // 4. Insert Booking
-        $insStmt = $pdo->prepare("INSERT INTO bookings (id, user_id, user_name, user_email, event_id, event_title, event_date, event_time, venue, tickets, tier_name, ticket_price, discount_amount, promo_code, total_amount, payment_status, booking_status, payment_method, check_in_status, booking_date, qr_code_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Paid', 'Confirmed', ?, 'Pending', ?, ?)");
+        $insStmt = $pdo->prepare("INSERT INTO bookings (id, user_id, user_name, user_email, attendee_image, guests_json, event_id, event_title, event_date, event_time, venue, tickets, tier_name, ticket_price, discount_amount, promo_code, total_amount, payment_status, booking_status, payment_method, check_in_status, booking_date, qr_code_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Paid', 'Confirmed', ?, 'Pending', ?, ?)");
         $insStmt->execute([
             $bookingId,
             $userId,
             $userName,
             $userEmail,
+            $attendeeImage,
+            $guestsJson,
             $event['id'],
             $event['title'],
             $event['date'],
