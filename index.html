@@ -5,12 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eventify - Premium SaaS Event Management & Ticketing Platform</title>
   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .hero-search-card {
+      background: rgba(17, 24, 39, 0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 2px solid var(--accent-primary);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.35);
+      text-align: left;
+    }
+    .hero-search-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1.1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .landing-search-input {
+      width: 100%;
+      height: 48px;
+      padding-left: 2.6rem;
+      padding-right: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .landing-search-input:focus {
+      border-color: var(--accent-primary);
+    }
+    .landing-select {
+      width: 100%;
+      height: 48px;
+      padding-left: 2.4rem;
+      padding-right: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .landing-select:focus {
+      border-color: var(--accent-primary);
+    }
+    .search-tag-btn {
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .search-tag-btn:hover {
+      background: var(--accent-gradient-subtle);
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+    }
+    @media (max-width: 900px) {
+      .hero-search-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .nav-search-wrapper {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -21,6 +102,12 @@
         <img src="images/logo.png" alt="Logo" class="brand-icon" style="width: 24px; height: 24px; object-fit: contain;">
         <span>Eventify</span>
       </a>
+
+      <!-- Instant Navbar Search Input (Always Visible) -->
+      <div class="nav-search-wrapper" style="position: relative; max-width: 260px; width: 100%; margin: 0 1rem;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--accent-primary); font-size: 0.85rem; pointer-events: none;"></i>
+        <input type="text" id="navbar-search-input" placeholder="Search events..." style="width: 100%; height: 36px; padding-left: 2.3rem; padding-right: 0.85rem; border-radius: var(--radius-full); background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.85rem; outline: none; transition: border-color 0.2s;">
+      </div>
 
       <div class="nav-links">
         <a href="#featured-events" class="nav-link">Explore Events</a>
@@ -56,8 +143,71 @@
         Seamlessly organize high-impact conferences, concert festivals, and workshops. Complete with digital QR passes, real-time analytics, and instant seat reservations.
       </p>
 
-      <div class="hero-actions">
-        <a href="user/events.html" class="btn btn-primary btn-lg">
+      <!-- Prominent Hero Search Panel -->
+      <div class="hero-search-wrapper" style="max-width: 880px; margin: 2.2rem auto 2rem; position: relative; z-index: 10;">
+        <div class="hero-search-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-weight: 700; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-primary);"></i>
+              <span>Find Your Next Event</span>
+            </div>
+            <div class="text-xs text-secondary"><i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> Live Seat Reservations • PKR Pricing</div>
+          </div>
+
+          <form id="landing-hero-search-form" class="hero-search-grid" onsubmit="event.preventDefault(); window.performLandingSearch();">
+            <div style="position: relative;">
+              <i class="fa-solid fa-keyboard" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-primary); font-size: 0.9rem;"></i>
+              <input type="text" id="landing-search-input" class="landing-search-input" placeholder="Event title, artist, topic...">
+            </div>
+
+            <div style="position: relative;">
+              <i class="fa-solid fa-layer-group" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-primary); font-size: 0.9rem;"></i>
+              <select id="landing-category-select" class="landing-select">
+                <option value="">All Categories</option>
+                <option value="Technology">Technology</option>
+                <option value="Concert">Concerts</option>
+                <option value="Workshop">Workshops</option>
+                <option value="Conference">Conferences</option>
+                <option value="Exhibition">Exhibitions</option>
+                <option value="Party">Parties</option>
+                <option value="Wedding">Weddings</option>
+                <option value="Seminar">Seminars</option>
+                <option value="Sports">Sports</option>
+              </select>
+            </div>
+
+            <div style="position: relative;">
+              <i class="fa-solid fa-location-dot" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-primary); font-size: 0.9rem;"></i>
+              <select id="landing-city-select" class="landing-select">
+                <option value="">All Cities</option>
+                <option value="Islamabad">Islamabad</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Karachi">Karachi</option>
+                <option value="San Jose">San Jose</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="height: 48px; padding: 0 1.8rem; font-weight: 700; border-radius: var(--radius-md); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <span>Search Events</span>
+            </button>
+          </form>
+
+          <!-- Quick Filter Pills -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+            <span class="text-xs text-muted font-semibold">Popular:</span>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('Sufi');">🎵 Sufi Music</button>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('AI');">🤖 AI Summit</button>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('Workshop');">💻 Workshops</button>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('Leadership');">🎤 Leadership</button>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('Startup');">🚀 Startup Expo</button>
+            <button type="button" class="search-tag-btn" onclick="window.quickSearchTag('Gala');">🎉 Gala Dinner</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-actions" style="margin-top: 1rem;">
+        <a href="user/events.html" class="btn btn-outline btn-lg">
           <span>Explore All Events</span>
           <span>→</span>
         </a>
@@ -111,35 +261,35 @@
     </div>
 
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1.25rem;">
-      <a href="user/events.html?cat=Conference" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Conference" onclick="window.filterLandingCategory('Conference'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-microphone"></i></div>
         <div class="font-bold text-sm text-primary">Conferences</div>
       </a>
-      <a href="user/events.html?cat=Concert" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Concert" onclick="window.filterLandingCategory('Concert'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-music"></i></div>
         <div class="font-bold text-sm text-primary">Concerts</div>
       </a>
-      <a href="user/events.html?cat=Workshop" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Workshop" onclick="window.filterLandingCategory('Workshop'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-laptop"></i></div>
         <div class="font-bold text-sm text-primary">Workshops</div>
       </a>
-      <a href="user/events.html?cat=Wedding" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Wedding" onclick="window.filterLandingCategory('Wedding'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-ring"></i></div>
         <div class="font-bold text-sm text-primary">Weddings</div>
       </a>
-      <a href="user/events.html?cat=Seminar" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Seminar" onclick="window.filterLandingCategory('Seminar'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-seedling"></i></div>
         <div class="font-bold text-sm text-primary">Seminars</div>
       </a>
-      <a href="user/events.html?cat=Sports" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Sports" onclick="window.filterLandingCategory('Sports'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-trophy"></i></div>
         <div class="font-bold text-sm text-primary">Sports</div>
       </a>
-      <a href="user/events.html?cat=Exhibition" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Exhibition" onclick="window.filterLandingCategory('Exhibition'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-palette"></i></div>
         <div class="font-bold text-sm text-primary">Exhibitions</div>
       </a>
-      <a href="user/events.html?cat=Party" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
+      <a href="user/events.html?cat=Party" onclick="window.filterLandingCategory('Party'); return false;" class="card card-interactive" style="text-align: center; padding: 1.5rem 1rem;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-martini-glass"></i></div>
         <div class="font-bold text-sm text-primary">Parties</div>
       </a>
@@ -148,12 +298,41 @@
 
   <!-- Featured Events Section -->
   <section class="container" id="featured-events" style="padding: 2rem 1.5rem 5rem;">
-    <div class="flex justify-between items-end flex-wrap gap-4" style="margin-bottom: 2.5rem;">
-      <div>
-        <span class="category-tag">FEATURED EVENTS</span>
-        <h2 style="font-size: 2rem; margin-top: 0.5rem;">Trending & Upcoming Experiences</h2>
+    <!-- Section Search & Filter Box -->
+    <div class="card" style="background: var(--bg-tertiary); border: 2px solid var(--accent-primary); border-radius: var(--radius-xl); padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-glow);">
+      <div class="flex justify-between items-center flex-wrap gap-4" style="margin-bottom: 1.25rem;">
+        <div>
+          <span class="category-tag">LIVE DIRECTORY</span>
+          <h2 style="font-size: 1.75rem; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-primary);"></i>
+            <span>Browse & Filter Events</span>
+          </h2>
+        </div>
+        <div style="position: relative; min-width: 280px; flex: 1; max-width: 450px;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-primary);"></i>
+          <input type="text" id="landing-inline-search" placeholder="Filter by event name, artist, city..." class="form-control" style="padding-left: 2.6rem; border-radius: var(--radius-full); height: 42px; font-size: 0.9rem; background: var(--bg-secondary);">
+        </div>
       </div>
-      <a href="user/events.html" class="btn btn-primary btn-sm">Explore All Events →</a>
+
+      <!-- Quick Category Filter Pills -->
+      <div class="flex gap-2 flex-wrap" id="landing-category-pills">
+        <button type="button" class="btn btn-sm btn-primary cat-pill-btn active" onclick="window.filterLandingCategory('');" style="border-radius: var(--radius-full);">All Events</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Concert');" style="border-radius: var(--radius-full);">🎵 Concerts</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Workshop');" style="border-radius: var(--radius-full);">💻 Workshops</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Conference');" style="border-radius: var(--radius-full);">🎤 Conferences</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Exhibition');" style="border-radius: var(--radius-full);">🎨 Exhibitions</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Party');" style="border-radius: var(--radius-full);">🎉 Parties</button>
+        <button type="button" class="btn btn-sm btn-outline cat-pill-btn" onclick="window.filterLandingCategory('Technology');" style="border-radius: var(--radius-full);">🤖 Technology</button>
+      </div>
+    </div>
+
+    <!-- Active Search Filter Feedback Bar -->
+    <div id="landing-search-feedback" style="display: none; margin-bottom: 1.5rem; background: var(--bg-tertiary); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); align-items: center; justify-content: space-between;">
+      <span class="text-sm text-secondary" id="landing-search-feedback-text"></span>
+      <button type="button" onclick="window.clearLandingSearch()" class="btn btn-ghost btn-xs text-danger" style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+        <i class="fa-solid fa-xmark"></i>
+        <span>Clear Filter</span>
+      </button>
     </div>
 
     <!-- Events Grid Container -->
@@ -282,6 +461,7 @@
 
   <!-- Scripts -->
   <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/ui.js"></script>
@@ -289,14 +469,241 @@
   <script src="js/bookings.js"></script>
   
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    let allLandingEvents = [];
+
+    function renderLandingEvents(eventsToRender) {
       const grid = document.getElementById('landing-featured-events-grid');
+      const feedbackBar = document.getElementById('landing-search-feedback');
+      const feedbackText = document.getElementById('landing-search-feedback-text');
+
+      const heroQuery = (document.getElementById('landing-search-input')?.value || '').trim();
+      const inlineQuery = (document.getElementById('landing-inline-search')?.value || '').trim();
+      const query = inlineQuery || heroQuery;
+      const cat = document.getElementById('landing-category-select')?.value || '';
+
+      if (feedbackBar && feedbackText) {
+        if (query || cat) {
+          feedbackBar.style.display = 'flex';
+          const filterDetails = [];
+          if (query) filterDetails.push(`keyword "<strong>${UI.escapeHtml(query)}</strong>"`);
+          if (cat) filterDetails.push(`category "<strong>${UI.escapeHtml(cat)}</strong>"`);
+          feedbackText.innerHTML = `Showing <strong>${eventsToRender.length}</strong> event${eventsToRender.length === 1 ? '' : 's'} matching ${filterDetails.join(' and ')}`;
+        } else {
+          feedbackBar.style.display = 'none';
+        }
+      }
+
+      if (!eventsToRender || eventsToRender.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1.5rem; background: var(--bg-glass-card); border-radius: var(--radius-xl); border: 1px solid var(--border-glass);">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-muted);"><i class="fa-solid fa-calendar-xmark"></i></div>
+            <h3 class="font-bold text-xl" style="margin-bottom: 0.5rem;">No Events Found</h3>
+            <p class="text-secondary text-sm" style="max-width: 420px; margin: 0 auto 1.5rem;">
+              We couldn't find any events matching your search criteria. Try a different keyword or browse all categories.
+            </p>
+            <button type="button" onclick="window.clearLandingSearch()" class="btn btn-primary btn-sm">
+              <i class="fa-solid fa-rotate-left"></i> Reset Search Filter
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = eventsToRender.map(e => EventsManager.renderEventCard(e, true)).join('');
+    }
+
+    function applyLandingFilters() {
+      const heroInput = document.getElementById('landing-search-input');
+      const inlineInput = document.getElementById('landing-inline-search');
+      const navInput = document.getElementById('navbar-search-input');
+      const catSelect = document.getElementById('landing-category-select');
+      const citySelect = document.getElementById('landing-city-select');
+
+      const query = (inlineInput?.value || heroInput?.value || navInput?.value || '').trim().toLowerCase();
+      const selectedCat = (catSelect ? catSelect.value : '').trim().toLowerCase();
+      const selectedCity = (citySelect ? citySelect.value : '').trim().toLowerCase();
+
+      // Update pills active styling
+      document.querySelectorAll('.cat-pill-btn').forEach(btn => {
+        btn.classList.remove('btn-primary', 'active');
+        btn.classList.add('btn-outline');
+        const text = btn.innerText.toLowerCase();
+        if ((!selectedCat && text.includes('all')) || (selectedCat && text.includes(selectedCat.slice(0, 4)))) {
+          btn.classList.add('btn-primary', 'active');
+          btn.classList.remove('btn-outline');
+        }
+      });
+
+      let filtered = allLandingEvents.filter(e => {
+        if (selectedCat) {
+          const cat = (e.category || '').toLowerCase();
+          const matchCat = cat.includes(selectedCat) || selectedCat.includes(cat);
+          if (!matchCat) return false;
+        }
+
+        if (selectedCity) {
+          const loc = (e.location || '').toLowerCase();
+          const ven = (e.venue || '').toLowerCase();
+          if (!loc.includes(selectedCity) && !ven.includes(selectedCity)) return false;
+        }
+
+        if (!query) return true;
+        const inTitle = (e.title || '').toLowerCase().includes(query);
+        const inDesc = (e.description || '').toLowerCase().includes(query);
+        const inVenue = (e.venue || '').toLowerCase().includes(query);
+        const inLocation = (e.location || '').toLowerCase().includes(query);
+        const inOrganizer = (e.organizer || '').toLowerCase().includes(query);
+        const inCategory = (e.category || '').toLowerCase().includes(query);
+        return inTitle || inDesc || inVenue || inLocation || inOrganizer || inCategory;
+      });
+
+      renderLandingEvents(filtered);
+    }
+
+    window.performLandingSearch = function() {
+      const heroVal = document.getElementById('landing-search-input')?.value || document.getElementById('navbar-search-input')?.value || '';
+      const inlineInput = document.getElementById('landing-inline-search');
+      if (inlineInput) inlineInput.value = heroVal;
+
+      applyLandingFilters();
+
+      const eventsSec = document.getElementById('featured-events');
+      if (eventsSec) {
+        eventsSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    window.quickSearchTag = function(tag) {
+      const heroInput = document.getElementById('landing-search-input');
+      const inlineInput = document.getElementById('landing-inline-search');
+      const navInput = document.getElementById('navbar-search-input');
+      const catSelect = document.getElementById('landing-category-select');
+
+      if (heroInput) heroInput.value = tag;
+      if (inlineInput) inlineInput.value = tag;
+      if (navInput) navInput.value = tag;
+      if (catSelect) catSelect.value = '';
+
+      applyLandingFilters();
+
+      const eventsSec = document.getElementById('featured-events');
+      if (eventsSec) {
+        eventsSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    window.filterLandingCategory = function(catName) {
+      const catSelect = document.getElementById('landing-category-select');
+      if (catSelect) {
+        let found = false;
+        for (let opt of catSelect.options) {
+          if (opt.value && (opt.value.toLowerCase().includes(catName.toLowerCase()) || catName.toLowerCase().includes(opt.value.toLowerCase()))) {
+            catSelect.value = opt.value;
+            found = true;
+            break;
+          }
+        }
+        if (!found) catSelect.value = '';
+      }
+      applyLandingFilters();
+      const eventsSec = document.getElementById('featured-events');
+      if (eventsSec) {
+        eventsSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    window.clearLandingSearch = function() {
+      const heroInput = document.getElementById('landing-search-input');
+      const inlineInput = document.getElementById('landing-inline-search');
+      const navInput = document.getElementById('navbar-search-input');
+      const catSelect = document.getElementById('landing-category-select');
+      const citySelect = document.getElementById('landing-city-select');
+
+      if (heroInput) heroInput.value = '';
+      if (inlineInput) inlineInput.value = '';
+      if (navInput) navInput.value = '';
+      if (catSelect) catSelect.value = '';
+      if (citySelect) citySelect.value = '';
+
+      applyLandingFilters();
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const grid = document.getElementById('landing-featured-events-grid');
+      const heroInput = document.getElementById('landing-search-input');
+      const inlineInput = document.getElementById('landing-inline-search');
+      const navInput = document.getElementById('navbar-search-input');
+      const catSelect = document.getElementById('landing-category-select');
+      const citySelect = document.getElementById('landing-city-select');
+
+      if (navInput) {
+        navInput.addEventListener('input', (e) => {
+          if (heroInput) heroInput.value = e.target.value;
+          if (inlineInput) inlineInput.value = e.target.value;
+          applyLandingFilters();
+        });
+        navInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            window.performLandingSearch();
+          }
+        });
+      }
+
+      if (heroInput) {
+        heroInput.addEventListener('input', (e) => {
+          if (inlineInput) inlineInput.value = e.target.value;
+          if (navInput) navInput.value = e.target.value;
+        });
+        heroInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            window.performLandingSearch();
+          }
+        });
+      }
+
+      if (inlineInput) {
+        inlineInput.addEventListener('input', (e) => {
+          if (heroInput) heroInput.value = e.target.value;
+          if (navInput) navInput.value = e.target.value;
+          applyLandingFilters();
+        });
+      }
+
+      if (catSelect) {
+        catSelect.addEventListener('change', () => {
+          applyLandingFilters();
+        });
+      }
+
+      if (citySelect) {
+        citySelect.addEventListener('change', () => {
+          applyLandingFilters();
+        });
+      }
+
+      // Load events
       if (grid) {
-        UI.simulateLoading(grid, () => {
-          const events = Storage.getEvents();
-          const featured = events.filter(e => e.featured || e.status === 'Upcoming').slice(0, 6);
-          grid.innerHTML = featured.map(e => EventsManager.renderEventCard(e, true)).join('');
-        }, 'events', 6, 400);
+        UI.simulateLoading(grid, async () => {
+          // If API available, attempt to fetch live events from MySQL
+          if (typeof API !== 'undefined' && API.getEvents) {
+            try {
+              const res = await API.getEvents();
+              if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+                allLandingEvents = res.data;
+              } else {
+                allLandingEvents = Storage.getEvents();
+              }
+            } catch (err) {
+              allLandingEvents = Storage.getEvents();
+            }
+          } else {
+            allLandingEvents = Storage.getEvents();
+          }
+
+          applyLandingFilters();
+        }, 'events', 6, 300);
       }
     });
   </script>

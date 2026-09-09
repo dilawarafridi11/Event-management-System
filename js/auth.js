@@ -6,6 +6,36 @@
 const Auth = {
   getSession() {
     try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('demo') === 'admin') {
+        const adminData = {
+          id: 'USR-001',
+          name: 'Alexander Wright',
+          email: 'admin@eventify.com',
+          role: 'SuperAdmin',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          phone: '+1 (555) 019-2834',
+          location: 'San Francisco, CA',
+          loginTime: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(adminData));
+        return adminData;
+      }
+      if (urlParams.get('demo') === 'user') {
+        const userData = {
+          id: 'USR-102',
+          name: 'Sophia Martinez',
+          email: 'user@eventify.com',
+          role: 'User',
+          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+          phone: '+1 (555) 345-6789',
+          location: 'New York, USA',
+          loginTime: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(userData));
+        return userData;
+      }
+
       const adminSess = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
       if (adminSess) {
         const parsed = JSON.parse(adminSess);

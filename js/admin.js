@@ -386,8 +386,43 @@ const Admin = {
             </div>
 
             <div class="form-group">
-              <label class="form-label">Event Banner Image URL</label>
-              <input type="url" class="form-control" id="event-input-image" value="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1000&q=80">
+              <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-solid fa-image"></i> Event Banner Picture <span class="required">*</span></span>
+                <span class="text-xs text-muted">Upload directly from device</span>
+              </label>
+
+              <!-- Hidden native file input -->
+              <input type="file" id="event-file-picker" accept="image/png, image/jpeg, image/webp, image/jpg" style="display: none;" onchange="Admin.handleEventImageSelect(this)">
+              <!-- Hidden input holding final image string (Base64 data URL or server URL) -->
+              <input type="hidden" id="event-input-image" value="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1000&q=80">
+
+              <!-- Interactive Upload & Preview Box -->
+              <div id="event-image-dropzone" style="border: 2px dashed var(--accent-primary); border-radius: var(--radius-lg); padding: 1.25rem; text-align: center; background: var(--bg-tertiary); transition: all 0.2s;">
+                
+                <!-- Live Image Preview -->
+                <div id="event-image-preview-container" style="margin-bottom: 0.85rem; position: relative; max-height: 180px; overflow: hidden; border-radius: var(--radius-md); background: rgba(0,0,0,0.25);">
+                  <img id="event-image-preview" src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1000&q=80" alt="Banner Preview" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: var(--radius-md); display: block;">
+                </div>
+
+                <div class="flex items-center justify-center gap-3 flex-wrap">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('event-file-picker').click();" style="display: flex; align-items: center; gap: 0.5rem; border-radius: var(--radius-full); padding: 0.5rem 1.25rem;">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Choose Picture</span>
+                  </button>
+                  <span class="text-xs text-muted" id="event-image-filename">JPG, PNG, WebP supported (Max 5MB)</span>
+                  <button type="button" class="btn btn-ghost btn-xs text-secondary" onclick="Admin.toggleImageUrlInput();" title="Or enter image URL directly" style="font-size: 0.75rem;">
+                    <i class="fa-solid fa-link"></i> Or use URL
+                  </button>
+                </div>
+              </div>
+
+              <!-- Collapsible manual URL input (for optional URL paste) -->
+              <div id="event-image-url-wrapper" style="display: none; margin-top: 0.6rem;">
+                <div style="display: flex; gap: 0.5rem;">
+                  <input type="url" class="form-control" id="event-input-image-url" placeholder="https://example.com/banner.jpg" style="font-size: 0.85rem; height: 38px;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="Admin.applyImageUrl();" style="white-space: nowrap;">Apply URL</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -403,6 +438,111 @@ const Admin = {
     document.getElementById('event-input-date').value = d.toISOString().split('T')[0];
 
     UI.openModal('event-form-modal');
+  },
+
+  handleEventImageSelect(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      UI.showToast('Image file size must be less than 10MB', 'error', 'File Too Large');
+      return;
+    }
+
+    const filenameText = document.getElementById('event-image-filename');
+    if (filenameText) filenameText.innerHTML = '<span class="spin"><i class="fa-solid fa-spinner"></i></span> Processing picture...';
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const rawDataUrl = e.target.result;
+      const img = new Image();
+      img.onload = async () => {
+        // High quality web scaling (max width 1200, max height 800)
+        let w = img.width;
+        let h = img.height;
+        const maxW = 1200;
+        const maxH = 800;
+
+        if (w > maxW || h > maxH) {
+          if (w / maxW > h / maxH) {
+            h = Math.round((h * maxW) / w);
+            w = maxW;
+          } else {
+            w = Math.round((w * maxH) / h);
+            h = maxH;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.86);
+
+        const preview = document.getElementById('event-image-preview');
+        const hiddenInput = document.getElementById('event-input-image');
+
+        if (preview) preview.src = optimizedDataUrl;
+        if (hiddenInput) hiddenInput.value = optimizedDataUrl;
+        if (filenameText) filenameText.textContent = `${file.name} (Ready)`;
+
+        UI.showToast(`Picture selected: ${file.name}`, 'success', 'Photo Ready');
+
+        // Async server upload if backend is active
+        if (typeof API !== 'undefined' && API.uploadImage) {
+          try {
+            await API.uploadImage(file);
+          } catch (err) {
+            console.warn('[Upload] Server upload fallback:', err);
+          }
+        }
+      };
+
+      img.onerror = () => {
+        const preview = document.getElementById('event-image-preview');
+        const hiddenInput = document.getElementById('event-input-image');
+        if (preview) preview.src = rawDataUrl;
+        if (hiddenInput) hiddenInput.value = rawDataUrl;
+        if (filenameText) filenameText.textContent = file.name;
+        UI.showToast(`Picture selected: ${file.name}`, 'success', 'Photo Ready');
+      };
+
+      img.src = rawDataUrl;
+    };
+    reader.readAsDataURL(file);
+  },
+
+  toggleImageUrlInput() {
+    const wrapper = document.getElementById('event-image-url-wrapper');
+    if (wrapper) {
+      wrapper.style.display = wrapper.style.display === 'none' ? 'block' : 'none';
+      if (wrapper.style.display === 'block') {
+        const urlInput = document.getElementById('event-input-image-url');
+        const hiddenInput = document.getElementById('event-input-image');
+        if (urlInput && hiddenInput && !hiddenInput.value.startsWith('data:')) {
+          urlInput.value = hiddenInput.value;
+        }
+        if (urlInput) urlInput.focus();
+      }
+    }
+  },
+
+  applyImageUrl() {
+    const urlInput = document.getElementById('event-input-image-url');
+    const url = urlInput ? urlInput.value.trim() : '';
+    if (!url) {
+      UI.showToast('Please enter a valid image URL', 'warning', 'Empty URL');
+      return;
+    }
+    const preview = document.getElementById('event-image-preview');
+    const hiddenInput = document.getElementById('event-input-image');
+    const filenameText = document.getElementById('event-image-filename');
+
+    if (preview) preview.src = url;
+    if (hiddenInput) hiddenInput.value = url;
+    if (filenameText) filenameText.textContent = 'Custom URL image applied';
+    UI.showToast('Image URL applied successfully!', 'success', 'URL Loaded');
   },
 
   openEditEventModal(eventId) {
@@ -423,7 +563,13 @@ const Admin = {
     document.getElementById('event-input-price').value = event.ticketPrice;
     document.getElementById('event-input-organizer').value = event.organizer;
     document.getElementById('event-input-status').value = event.status;
-    document.getElementById('event-input-image').value = event.image;
+    
+    const imgVal = event.image || 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1000&q=80';
+    document.getElementById('event-input-image').value = imgVal;
+    const preview = document.getElementById('event-image-preview');
+    if (preview) preview.src = imgVal;
+    const fnEl = document.getElementById('event-image-filename');
+    if (fnEl) fnEl.textContent = 'Current event banner (Click Choose Picture to change)';
 
     const form = document.getElementById('create-event-form');
     form.onsubmit = (e) => {

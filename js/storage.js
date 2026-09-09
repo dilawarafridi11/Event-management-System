@@ -47,6 +47,136 @@ const INITIAL_SEED_DATA = {
         { name: 'General Admission', price: 1200, benefits: ['Keynote Access', 'Expo Floor', 'Lunch Buffet'] },
         { name: 'VIP All-Access', price: 2160, benefits: ['Front Row Seating', 'VIP Lounge', 'Speaker Meet & Greet'] }
       ]
+    },
+    {
+      id: 'EVT-1002',
+      title: 'Sufi & Classical Music Night',
+      description: 'An enchanting musical evening featuring celebrated Sufi maestros, spiritual Qawwali, and acoustic performances.',
+      category: 'Concert',
+      date: '2026-10-22',
+      startTime: '07:00 PM',
+      endTime: '11:00 PM',
+      venue: 'Alhamra Arts Council',
+      venueId: 'VEN-102',
+      location: 'Lahore, PK',
+      capacity: 400,
+      bookedSeats: 85,
+      ticketPrice: 2500,
+      organizerId: 'USR-354',
+      organizer: 'Farman',
+      image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.95,
+      reviewCount: 32,
+      tiers: [
+        { name: 'Standard Hall', price: 2500, benefits: ['Concert Admission', 'Welcome Drink'] },
+        { name: 'Front-Row VIP', price: 5000, benefits: ['Front-Row Sofa Seating', 'VIP Lounge Access', 'Artist Meet & Greet'] }
+      ]
+    },
+    {
+      id: 'EVT-1003',
+      title: 'Full-Stack Web & AI Masterclass',
+      description: 'Intensive hands-on training covering modern full-stack development, microservices, REST APIs, and generative AI agents.',
+      category: 'Workshop',
+      date: '2026-11-05',
+      startTime: '10:00 AM',
+      endTime: '04:00 PM',
+      venue: 'National Incubation Center',
+      venueId: 'VEN-103',
+      location: 'Islamabad, PK',
+      capacity: 150,
+      bookedSeats: 40,
+      ticketPrice: 1500,
+      organizerId: 'USR-205',
+      organizer: 'Elena Rostova',
+      image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.88,
+      reviewCount: 15,
+      tiers: [
+        { name: 'Student Pass', price: 1500, benefits: ['Full Day Workshop', 'Certificate of Completion', 'Course Materials'] },
+        { name: 'Professional Pass', price: 3000, benefits: ['Full Workshop', '1-on-1 Code Review', 'Priority Q&A', 'Certificate'] }
+      ]
+    },
+    {
+      id: 'EVT-1004',
+      title: 'Pakistan Business Leadership Summit',
+      description: 'Connecting leading enterprise executives, investors, and startup founders to discuss market leadership and economic growth.',
+      category: 'Conference',
+      date: '2026-11-18',
+      startTime: '08:30 AM',
+      endTime: '06:00 PM',
+      venue: 'Pearl Continental Grand Ballroom',
+      venueId: 'VEN-104',
+      location: 'Karachi, PK',
+      capacity: 600,
+      bookedSeats: 120,
+      ticketPrice: 4000,
+      organizerId: 'USR-101',
+      organizer: 'Alexander Wright',
+      image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.92,
+      reviewCount: 24,
+      tiers: [
+        { name: 'Delegate Access', price: 4000, benefits: ['Keynote Sessions', 'Buffet Lunch', 'Networking Lounge'] },
+        { name: 'Executive VIP Table', price: 10000, benefits: ['Reserved Front Table', 'Private Executive Lunch', 'Full Access Pass'] }
+      ]
+    },
+    {
+      id: 'EVT-1005',
+      title: 'National Startup & Innovation Expo',
+      description: 'Over 100 high-growth tech startups showcase prototypes, live pitches to venture capitalists, and product demo stations.',
+      category: 'Exhibition',
+      date: '2026-12-02',
+      startTime: '10:00 AM',
+      endTime: '07:00 PM',
+      venue: 'Pak-China Friendship Centre',
+      venueId: 'VEN-105',
+      location: 'Islamabad, PK',
+      capacity: 800,
+      bookedSeats: 210,
+      ticketPrice: 800,
+      organizerId: 'USR-354',
+      organizer: 'Farman',
+      image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.85,
+      reviewCount: 19,
+      tiers: [
+        { name: 'Visitor Expo Pass', price: 800, benefits: ['Exhibition Hall Access', 'Demo Stages', 'Event Guide'] },
+        { name: 'Investor & Founder Pass', price: 3500, benefits: ['VIP Pitch Stage', 'Investor Lounge', 'Fast-track Entry'] }
+      ]
+    },
+    {
+      id: 'EVT-1006',
+      title: 'Annual Tech Gala Dinner & Awards',
+      description: 'A prestigious black-tie annual gathering celebrating outstanding achievements, innovation milestones, and digital leadership.',
+      category: 'Party',
+      date: '2026-12-20',
+      startTime: '07:30 PM',
+      endTime: '11:30 PM',
+      venue: 'Serena Hotel Sheesh Mahal',
+      venueId: 'VEN-106',
+      location: 'Islamabad, PK',
+      capacity: 350,
+      bookedSeats: 90,
+      ticketPrice: 5000,
+      organizerId: 'USR-101',
+      organizer: 'Alexander Wright',
+      image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=800&q=80',
+      status: 'Upcoming',
+      featured: true,
+      rating: 4.96,
+      reviewCount: 28,
+      tiers: [
+        { name: 'Individual Seat', price: 5000, benefits: ['5-Course Gourmet Dinner', 'Awards Ceremony', 'Live Entertainment'] },
+        { name: 'Corporate Table (8 Seats)', price: 35000, benefits: ['Dedicated Table of 8', 'Company Branding', 'Premium Hospitality'] }
+      ]
     }
   ],
   venues: [
@@ -190,6 +320,24 @@ const Storage = {
     if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SEED_DATA.settings));
     }
+
+    // Auto-migrate settings currency to PKR if not set or previously '$'
+    try {
+      const storedSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS));
+      if (!storedSettings || storedSettings.currency === '$' || !storedSettings.currency) {
+        const updated = storedSettings || { ...INITIAL_SEED_DATA.settings };
+        updated.currency = 'PKR ';
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updated));
+      }
+    } catch (e) {}
+
+    // Auto-refresh events in localStorage if only 1 seed event existed
+    try {
+      const storedEvents = JSON.parse(localStorage.getItem(STORAGE_KEYS.EVENTS));
+      if (!storedEvents || storedEvents.length <= 1) {
+        localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(INITIAL_SEED_DATA.events));
+      }
+    } catch (e) {}
   },
 
   // Reset to initial seeds
@@ -208,14 +356,21 @@ const Storage = {
   // Currency & Formatting Helpers
   getCurrency() {
     const settings = this.getSettings();
-    return settings && settings.currency ? settings.currency : 'PKR ';
+    if (settings && settings.currency) {
+      const c = settings.currency.trim();
+      if (c === '$' || !c) return 'PKR ';
+      return c.endsWith(' ') ? c : c + ' ';
+    }
+    return 'PKR ';
   },
 
   formatPrice(amount) {
     const curr = this.getCurrency();
     const num = Number(amount) || 0;
     if (num === 0) return 'Free';
-    return `${curr}${num.toFixed(2).replace(/\.00PKR /, '')}`;
+    const sign = num < 0 ? '-' : '';
+    const formatted = Math.abs(num).toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    return `${sign}${curr.trim()} ${formatted}`;
   },
 
   // Events CRUD
@@ -244,7 +399,11 @@ const Storage = {
       eventData.bookedSeats = 0;
       events.unshift(eventData);
     }
-    localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+    try {
+      localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+    } catch (err) {
+      console.warn('LocalStorage quota warning for events:', err);
+    }
     return eventData;
   },
   deleteEvent(id) {
